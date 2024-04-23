@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ossian Stange </title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+  <div id="bgcontainer">
+    <nav>
+      <div></div> <!-- Empty div to center the navbar with flexbox -->
+      <ul class="nav-items">
+        <li><a href="#projects">Projekt</a></li>
+        <li><a href="#nostalgia">Nostalgilåda</a></li>
+        <li><a href="#contact">Kontakt</a></li>
+      </ul>
+      <div class="dropdown">
+        <button id="lang-btn">文</button>
+        <div class="dropdown-content">
+          <a>🇸🇪</a>
+          <a>🇬🇧</a>
+          <a>🇩🇪</a>
+          <a>🇰🇷</a>
+          <!-- Add more language options as needed -->
+        </div>
+      </div>
+    </nav>
+
+    <section id="about">
+      <div class="about-content">
+        <div class="profile-pic">
+          <img src="./assets/pfp2.jpg" alt="Profile Picture" width="150" height="150">
+        </div>
+        <div class="about-info">
+          <h2 id="main-title" class="cursor"></h2>
+          <ul id="bio-list">
+            <li>Webbdesigner & apputvecklare 💻</li>
+            <li>Civilingenjörsstudent på KTH 🎓</li>
+            <li>Stockholm/Jönköping 📍</li>
+          </ul>
+          <!-- Lägg till något senare när fantasin finns -->
+          <p id="bio-text"></p>
+        </div>
+      </div>
+    </section>
+  </div>
+  <section id="projects">
+    <h2>Projekt</h2>
+    <p class="section-description">Större och mindre projekt i större och mindre syften.</p>
+    <div class="project-grid">
+      <div class="project-card">
+        <img src="./assets/indaproj.png" alt="Project 1" class="project-image">
+        <div class="project-info">
+          <h3>INDA Solar Systems</h3>
+          <p>Solsystemsgenerator med realistiskt ljus, atmosfärer, omloppsbanor och landskap 🚀</p>
+        </div>
+      </div>
+      <div class="project-card">
+        <img src="./assets/calcrn.jpg" alt="Project 2" class="project-image">
+        <div class="project-info">
+          <h3>Calc RN!</h3>
+          <p>Miniräknarapp med stilren design och intuitivt användargränssnitt 📱</p>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <img src="./assets/honcweb.png" alt="Project 4" class="project-image">
+        <div class="project-info">
+          <h3>Honcca Studios</h3>
+          <p>Hemsida till spelstudion Honcca Studios, för att visa upp och ladda ner spel 🦆</p>
+        </div>
+      </div>
+      </div>
+      <br>
+      <div class="nostalgia-grid">
+      
+        <div class="project-card">
+          <img src="./assets/koreakeys.png" alt="Project 1" class="project-image">
+          <div class="project-info">
+            <h3>Korea Keys</h3>
+            <p>한국어 타이핑 속도를 측정하는 웹사이트 🇰🇷 Made with Vue 3</p>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <img src="./assets/library.png" alt="Project 6" class="project-image">
+          <div class="project-info">
+            <h3>KTH Biblioteksprojekt</h3>
+            <p>Biblioteksida med en säker databas för inloggning, lånesystem och möjligheten att se tillgängliga böcker 📚</p>
+          </div>
+        </div>
+
+      <div class="project-card">
+        <img src="./assets/twitproj.jpg" alt="Project 5" class="project-image">
+        <div class="project-info">
+          <h3>Twitterklon</h3>
+          <p>En fullständig Twitter-kopia med webb- och mobilapp, med integrerad databas och API 🐦📱</p>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <section id="nostalgia">
+    <h2>Nostalgilåda 📦</h2>
+    <p class="section-description">Äldre projekt från gymnasietiden.</p>
+    <div class="nostalgia-grid">
+      <!-- Older projects go here -->
+      <div class="project-card">
+        <img src="./assets/fivemproj.jpg" alt="Project 2" class="project-image">
+        <div class="project-info">
+          <h3>FiveM Cars</h3>
+          <p>Biluthyrningsmod till GTA V, skapat i FiveM med Lua 🚔</p>
+        </div>
+      </div>
+      
+      <!-- Older projects go here -->
+      <div class="project-card">
+        <img src="./assets/tyskshop.png" alt="Project 1" class="project-image">
+        <div class="project-info">
+          <h3>Peach Watches</h3>
+          <p>Tysk shoppingsida gjord för en skoluppgift 🇩🇪</p>
+        </div>
+      </div>
+      <div class="project-card">
+        <img src="./assets/snakexna.PNG" alt="Project 1" class="project-image">
+        <div class="project-info">
+          <h3>SnakeXNA</h3>
+          <p>Ett av mina första spelprojekt. Klassiskt snakespel, gjord efter en kurs i spelutveckling 🐍</p>
+        </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>Kontakt</h2>
+    <p>📧 ossianst@kth.se</p>
+    <p>Sociala Medier: <a href="https://www.linkedin.com/in/ossian-stange-44b8a624a/">LinkedIn</a>, <a href="https://github.com/occnah">GitHub</a> 🌐</p>
+  </section>
+  <script src="scripts/typewriter.js"></script>
+  <script src="scripts/language.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+  <script>
+  VANTA.WAVES({
+    el: "#bgcontainer",
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    scale: 1.00,
+    scaleMobile: 1.00,
+    color: 0xc0c11
+  })
+  </script>
+
+</body>
+</html>
