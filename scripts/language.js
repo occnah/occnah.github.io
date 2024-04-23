@@ -52,7 +52,7 @@ function setLanguage(index) {
             break;
         case 2:
             maintitle.innerText = "Ossian Stange";
-            biolistItems[0].innerText = "Web- und Appentwickler";
+            biolistItems[0].innerText = "Web- und Appentwickler 💻";
             biolistItems[1].innerText = "Informatikstudent bei KTH 🎓";
             biolistItems[2].innerText = "Stockholm/Jönköping 📍";
             break;

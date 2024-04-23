@@ -76,6 +76,11 @@ section {
   text-align: left;
 }
 
+.project-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 .project-grid,
 .nostalgia-grid {
   display: grid;
