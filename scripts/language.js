@@ -62,6 +62,13 @@ function setLanguage(index) {
             biolistItems[1].innerText = "스웨덴왕립공과대학교 🎓";
             biolistItems[2].innerText = "스톡홀름 📍";
             break;
+        case 4:
+            maintitle.innerText = "オシアン スタンゲ";
+            biolistItems[0].innerText = "情報工学を専攻しています 💻";
+            biolistItems[1].innerText = "王立工科大学 🎓";
+            biolistItems[2].innerText = "ストックホルム 📍";
+
+            break;
         // Add more cases as needed
         default:
             maintitle.innerText = "Ossian Stange";
