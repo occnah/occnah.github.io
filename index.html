@@ -1,22 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ossian Stange </title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 
 </head>
+
 <body>
   <div id="bgcontainer">
     <nav>
       <div></div> <!-- Empty div to center the navbar with flexbox -->
       <ul class="nav-items">
-        <li><a href="#projects">Projekt</a></li>
-        <li><a href="#nostalgia">Nostalgilåda</a></li>
+        <li><a href="#apps">Appar</a></li>
+        <li><a href="#ai-projects">ML/AI</a></li>
+        <li><a href="#game-projects">Grafik</a></li>
+        <li><a href="#web">Webb</a></li>
         <li><a href="#contact">Kontakt</a></li>
       </ul>
       <div class="dropdown">
@@ -35,12 +40,12 @@
     <section id="about">
       <div class="about-content">
         <div class="profile-pic">
-          <img src="./assets/math.jpg" alt="Profile Picture" width="150" height="150">
+          <img src="./assets/pfp2.jpg" alt="Profile Picture" width="150" height="150">
         </div>
         <div class="about-info">
           <h2 id="main-title" class="cursor"></h2>
           <ul id="bio-list">
-            <li>Webbdesigner & apputvecklare 💻</li>
+            <li>DevOps @ THS Business 💻</li>
             <li>Civilingenjörsstudent på KTH 🎓</li>
             <li>Stockholm/Jönköping 📍</li>
           </ul>
@@ -50,125 +55,209 @@
       </div>
     </section>
   </div>
-  <section id="projects">
-    <h2>Projekt</h2>
-    <p class="section-description">Större och mindre projekt i större och mindre syften.</p>
+
+  <section id="apps">
+    <h2>Apputveckling</h2>
+    <p class="section-description">SwiftUI, React Native, Xamarin, Flutter</p>
     <div class="project-grid">
       <div class="project-card">
-        <a class="project-link" href="https://github.com/IndaPlus22/stensvad-ossianst-melvinbe-project" target="_blank">
-          <img src="./assets/indaproj.png" alt="Project 1" class="project-image">
-          <div class="project-info">
-            <h3>INDA Solar Systems</h3>
-            <p>Solsystemsgenerator med realistiskt ljus, atmosfärer, omloppsbanor och landskap 🚀</p>
-          </div>
-        </a>
-      </div>
-      
-      <div class="project-card">
-        <a class="project-link" href="https://github.com/occnah/CalculatorRN" target="_blank">
-          <img src="./assets/calcrn.jpg" alt="Project 2" class="project-image">
-          <div class="project-info">
-            <h3>Calc RN!</h3>
-            <p>Miniräknarapp med stilren design och intuitivt användargränssnitt 📱</p>
-          </div>
-        </a>
-      </div>
-
-      <div class="project-card">
-        <a class="project-link" href="https://github.com/occnah/honcca-web" target="_blank">
-          <img src="./assets/honcweb.png" alt="Project 4" class="project-image">
-          <div class="project-info">
-            <h3>Honcca Studios</h3>
-            <p>Hemsida till spelstudion Honcca Studios, för att visa upp och ladda ner spel 🦆</p>
-          </div>
-        </a>
-      </div>
-      </div>
-      <br>
-      <div class="nostalgia-grid">
-      
-        <div class="project-card">
-          <img src="./assets/koreakeys.png" alt="Project 1" class="project-image">
-          <div class="project-info">
-            <h3>Korea Keys</h3>
-            <p>한국어 타이핑 속도를 측정하는 웹사이트 🇰🇷 Made with Vue 3</p>
-          </div>
-        </div>
-
-        <div class="project-card">
-          <img src="./assets/library.png" alt="Project 6" class="project-image">
-          <div class="project-info">
-            <h3>KTH Biblioteksprojekt</h3>
-            <p>Biblioteksida med en säker databas för inloggning, lånesystem och möjligheten att se tillgängliga böcker 📚</p>
-          </div>
-        </div>
-
-      <div class="project-card">
-        <img src="./assets/twitproj.jpg" alt="Project 5" class="project-image">
+        <img src="./assets/hakyo.png" alt="Project 1" class="project-image">
         <div class="project-info">
-          <h3>Twitterklon</h3>
-          <p>En fullständig Twitter-kopia med webb- och mobilapp, med integrerad databas och API 🐦📱</p>
+          <h3>Hakyo 포모도로</h3>
+          <p>Plugga effektivt med pomodoro, flashcards och kursöversikter!</p>
         </div>
       </div>
-      
+      <div class="project-card">
+        <img src="./assets/calcrn2.png" alt="Project 2" class="project-image">
+        <div class="project-info">
+          <h3>Calc RN!</h3>
+          <p>Miniräknarapp med stilren design och intuitivt användargränssnitt 📱</p>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <img src="./assets/gymtrack34.png" alt="Project 4" class="project-image">
+        <div class="project-info">
+          <h3>Fitness Tracker</h3>
+          <p>Spara träningsmål, pass och statistik för träningen 🏋️</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section id="nostalgia">
-    <h2>Nostalgilåda 📦</h2>
-    <p class="section-description">Äldre projekt från gymnasietiden.</p>
-    <div class="nostalgia-grid">
-      <!-- Older projects go here -->
+  <section id="web">
+    <h2>Webbutveckling</h2>
+    <p class="section-description">React.js, Vue.js, Flask, PostgreSQL</p>
+    <div class="project-grid">
       <div class="project-card">
-        <img src="./assets/fivemproj.jpg" alt="Project 2" class="project-image">
+        <img src="./assets/honcweb.png" alt="Project 1" class="project-image">
+        <div class="project-info">
+          <h3>Honcca Studios</h3>
+          <p>Hemsida till spelstudion Honcca Studios, för att visa upp och ladda ner spel 🦆</p>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <img src="./assets/koreakeys.png" alt="Project 1" class="project-image">
+        <div class="project-info">
+          <h3>Korea Keys</h3>
+          <p>한국어 타이핑 속도를 측정하는 웹사이트 🇰🇷 Made with Vue 3</p>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <img src="./assets/osq.jpg" alt="Project 6" class="project-image">
+        <div class="project-info">
+          <h3>Osqbokning</h3>
+          <p>Bokningssystem av kontor till THS 🌩️ Skapad med Flask och MySQL
+          </p>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="nostalgia-grid">
+
+      <div class="project-card">
+        <img src="./assets/library.png" alt="Project 6" class="project-image">
+        <div class="project-info">
+          <h3>KTH Biblioteksprojekt</h3>
+          <p>Biblioteksida med en säker databas för inloggning, lånesystem och möjligheten att se tillgängliga böcker 📚
+          </p>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <img src="./assets/pyaudio.png" alt="Project 6" class="project-image">
+        <div class="project-info">
+          <h3>Slowed+Reverb.py</h3>
+          <p>Sakta ner låtar och redigera ljudbilden utan att förstöra ljudet 🎧🎵</p>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <img src="./assets/twitproj.png" alt="Project 6" class="project-image">
+        <div class="project-info">
+          <h3>Twitterklon</h3>
+          <p>En fullständig Twitter-kopia med webb- och mobilapp, med integrerad databas och API 🐦📱
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="ai-projects">
+    <h2>ML och matematik</h2>
+    <p class="section-description">Maskininlärning, numeriska metoder, diskret matematik</p>
+    <div class="project-grid">
+      <div class="project-card">
+        <img src="./assets/1d.png" alt="Project 1" class="project-image">
+        <div class="project-info">
+          <h3>Bayesian Polynomials</h3>
+          <p>Linjär bayesiansk regressionsmodell för att hitta polynomkoefficienter 🤓</p>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <img src="./assets/matlabweather.png" alt="Project 6" class="project-image">
+        <div class="project-info">
+          <h3>Weather Predictor</h3>
+          <p>Frekventialistisk MKV-tillämpning för att kartlägga väder och spåra trender 🌦️</p>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <img src="./assets/rsa.png" alt="Project 5" class="project-image">
+        <div class="project-info">
+          <h3>RSA-kryptering</h3>
+          <p>Egenskapad RSA-algoritm för att kryptera och dekryptera meddelanden 🌐</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="game-projects">
+    <h2>Spel och grafik</h2>
+    <p class="section-description">OpenGL, MonoGame, Three.js</p>
+    <div class="project-grid">
+      <div class="project-card">
+        <img src="./assets/indaproj.png" alt="Project 1" class="project-image">
+        <div class="project-info">
+          <h3>INDA Solar Systems</h3>
+          <p>Solsystemsgenerator med realistiskt ljus, atmosfärer, omloppsbanor och landskap 🚀</p>
+        </div>
+      </div>
+      <div class="project-card">
+        <img src="./assets/water.png" alt="Project 2" class="project-image">
+        <div class="project-info">
+          <h3>Ossian Ocean</h3>
+          <p>GLSL-shaders för realistisk vatteneffekt, med vågor och reflektion 🌊</p>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <img src="./assets/procedural.png" alt="Project 4" class="project-image">
+        <div class="project-info">
+          <h3>Procedural Terrains</h3>
+          <p>OpenGL-applikation med tillämpat Perlin Noise, Value Noise och fBm! 🌎</p>
+        </div>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="project-grid">
+      <div class="project-card">
+        <img src="./assets/fivemproj.jpg" alt="Project 1" class="project-image">
         <div class="project-info">
           <h3>FiveM Cars</h3>
           <p>Biluthyrningsmod till GTA V, skapat i FiveM med Lua 🚔</p>
         </div>
       </div>
-      
-      <!-- Older projects go here -->
+
       <div class="project-card">
-        <img src="./assets/tyskshop.png" alt="Project 1" class="project-image">
+        <img src="./assets/honccafest.png" alt="Project 6" class="project-image">
         <div class="project-info">
-          <h3>Peach Watches</h3>
-          <p>Tysk shoppingsida gjord för en skoluppgift 🇩🇪</p>
+          <h3>Honcca Fest: Party Royale!</h3>
+          <p>Spela upp till 4 spelare i 9 olika minigames!</p>
         </div>
       </div>
+
       <div class="project-card">
-        <a class="project-link" href="https://github.com/occnah/SnakeXNA" target="_blank">
-          <img src="./assets/snakexna.PNG" alt="Project 1" class="project-image">
-          <div class="project-info">
-            <h3>SnakeXNA</h3>
-            <p>Ett av mina första spelprojekt. Klassiskt snakespel, gjord efter en kurs i spelutveckling 🐍</p>
-          </div>
-        </a>
+        <img src="./assets/ray.png" alt="Project 5" class="project-image">
+        <div class="project-info">
+          <h3>Ray Tracing</h3>
+          <p>Rustaceans assemble 🦀🚀</p>
+        </div>
+      </div>
     </div>
   </section>
 
   <section id="contact">
     <h2>Kontakt</h2>
     <p>📧 ossianst@kth.se</p>
-    <p>Sociala Medier: <a href="https://www.linkedin.com/in/ossian-stange-44b8a624a/">LinkedIn</a>, <a href="https://github.com/occnah">GitHub</a> 🌐</p>
+    <p>Sociala Medier: <a href="https://www.linkedin.com/in/ossian-stange-44b8a624a/">LinkedIn</a>, <a
+        href="https://github.com/occnah">GitHub</a> 🌐</p>
   </section>
   <script src="scripts/typewriter.js"></script>
   <script src="scripts/language.js"></script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
   <script>
-  VANTA.WAVES({
-    el: "#bgcontainer",
-    mouseControls: true,
-    touchControls: true,
-    gyroControls: false,
-    minHeight: 200.00,
-    minWidth: 200.00,
-    scale: 1.00,
-    scaleMobile: 1.00,
-    color: 0xc0c11
-  })
+    VANTA.WAVES({
+      el: "#bgcontainer",
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      color: 0xc0c11
+    })
   </script>
 
 </body>
+
 </html>
