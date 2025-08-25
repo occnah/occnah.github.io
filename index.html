@@ -117,6 +117,36 @@
     </div>
   </section>
 
+  <!-- HACKER WALL -->
+  <section id="hacker" class="hacker">
+    <canvas id="hacker-canvas" aria-hidden="true"></canvas>
+    <h2 class="hacker__title">Not bored yet?</h2>
+  </section>
+
+  <!-- PLANET GENERATOR (fullscreen -> shrink to card -> spotlight text) -->
+  <section id="planet" class="planet">
+    <div class="planet__pin">
+      <!-- Fullscreen image that will shrink into the card on the right -->
+      <!-- Replace assets/planet.png with your real image path -->
+      <div class="planet__bg" style="--planet-img: url('assets/indaproj.png');"></div>
+
+      <!-- Final layout (text left, card right) -->
+      <div class="planet__inner">
+        <div class="planet__left">
+          <ul class="planet__copy" aria-label="Planet generator details">
+            <li class="planet__line">Planet generator.</li>
+            <li class="planet__line">Entirely handmade with math.</li>
+            <li class="planet__line">Optimized with OpenGL.</li>
+          </ul>
+        </div>
+        <div class="planet__right">
+          <!-- Invisible sizing target; the background image animates to this rect -->
+          <div class="planet__card case__shot" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CONTACT (fullscreen) -->
   <section id="contact" class="contact contact--hero" role="contentinfo">
     <div class="contact__wrap">
@@ -145,36 +175,6 @@
         <a href="mailto:ossianst@kth.se">ossianst@kth.se</a>
         <span aria-hidden="true">·</span>
         <span>Stockholm, Sweden</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- HACKER WALL -->
-  <section id="hacker" class="hacker">
-    <canvas id="hacker-canvas" aria-hidden="true"></canvas>
-    <h2 class="hacker__title">Not bored yet?</h2>
-  </section>
-
-  <!-- PLANET GENERATOR (fullscreen -> shrink to card -> spotlight text) -->
-  <section id="planet" class="planet">
-    <div class="planet__pin">
-      <!-- Fullscreen image that will shrink into the card on the right -->
-      <!-- Replace assets/planet.png with your real image path -->
-      <div class="planet__bg" style="--planet-img: url('assets/indaproj.png');"></div>
-
-      <!-- Final layout (text left, card right) -->
-      <div class="planet__inner">
-        <div class="planet__left">
-          <ul class="planet__copy" aria-label="Planet generator details">
-            <li class="planet__line">Planet generator.</li>
-            <li class="planet__line">Entirely handmade with math.</li>
-            <li class="planet__line">Optimized with OpenGL.</li>
-          </ul>
-        </div>
-        <div class="planet__right">
-          <!-- Invisible sizing target; the background image animates to this rect -->
-          <div class="planet__card case__shot" aria-hidden="true"></div>
-        </div>
       </div>
     </div>
   </section>
@@ -476,8 +476,8 @@
 })();
 </script>
 
-    <script>
-  // PLANET: full-bleed -> shrink-to-card (no stretch) -> spotlight lines
+  <script>
+  // PLANET: full-bleed -> shrink-to-card -> spotlight exactly one line
   window.addEventListener('DOMContentLoaded', () => {
     if (!window.gsap || !window.ScrollTrigger) return;
     gsap.registerPlugin(ScrollTrigger);
@@ -490,12 +490,15 @@
     const left  = section.querySelector('.planet__left');
     const lines = gsap.utils.toArray('.planet__line');
 
+    // read the muted color from CSS (fallback just in case)
+    const MUTED = getComputedStyle(section).getPropertyValue('--planet-muted')?.trim() || '#9aa0a6';
+
     function targetRect() {
       const s = section.getBoundingClientRect();
       const r = card.getBoundingClientRect();
       return {
-        left: r.left - s.left,
-        top:  r.top  - s.top,
+        left:   r.left - s.left,
+        top:    r.top  - s.top,
         width:  r.width,
         height: r.height
       };
@@ -513,7 +516,7 @@
       }
     });
 
-    // A) Morph the full-bleed bg into the card box (no non-uniform scale)
+    // A) Morph the full-bleed bg into the card
     tlPlanet.to(bg, {
       duration: 1.15,
       ease: 'power2.inOut',
@@ -527,24 +530,24 @@
 
     // B) Reveal the text block
     tlPlanet.to(left, {
-      duration: 0.7,
+      duration: 0.5,
       opacity: 1,
       y: 0,
       ease: 'power2.out'
     });
 
-    // C) Spotlight each line (white) with others muted
-    // C) Spotlight each line (white) with others muted
-    lines.forEach((line, i) => {
-      tlPlanet.to(line, { color: '#ffffff', duration: 0.35, ease: 'power1.out' });
-      tlPlanet.to({}, { duration: 0.35 });
-      if (i > 0) {
-        tlPlanet.to(lines[i - 1], {
-          color: 'var(--planet-muted)',   // ← use the local dark grey
-          duration: 0.3,
-          ease: 'power1.in'
-        }, '<');
-      }
+    // C) Spotlight: exactly one white at a time (no overlap)
+    //    Use instantaneous state switches so scrubbing never shows two.
+    gsap.set(lines, { color: MUTED });
+
+    const FADE = 0.15, HOLD = 0.45;
+    gsap.set(lines, { color: MUTED });
+
+    lines.forEach((line) => {
+      tlPlanet
+        .to(lines, { color: MUTED, duration: FADE, overwrite: 'auto' })   // ensure all muted first
+        .to(line,  { color: '#ffffff', duration: FADE, overwrite: 'auto' }) // then light the one
+        .to({}, { duration: HOLD });
     });
 
     // Reset geometry on refresh
@@ -552,7 +555,7 @@
       gsap.set(bg, { clearProps: 'left,top,width,height' });
     });
   });
-</script>
+  </script>
 
 </body>
 </html>
