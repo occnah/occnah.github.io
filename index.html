@@ -118,7 +118,7 @@
   </section>
 
   <!-- CONTACT (fullscreen) -->
-  <footer id="contact" class="contact contact--hero" role="contentinfo">
+  <section id="contact" class="contact contact--hero" role="contentinfo">
     <div class="contact__wrap">
       <p class="contact__eyebrow">Contact</p>
 
@@ -147,7 +147,7 @@
         <span>Stockholm, Sweden</span>
       </div>
     </div>
-  </footer>
+  </section>
 
   <!-- HACKER WALL -->
   <section id="hacker" class="hacker">
@@ -216,39 +216,8 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 
   <!-- Contact entrance -->
-  <!-- <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      if (window.gsap && window.ScrollTrigger) {
-        gsap.registerPlugin(ScrollTrigger);
-
-        // entrance
-        gsap.from('#contact .contact__wrap > *', {
-          delay: 0.35,
-          opacity: 0,
-          y: 20,
-          duration: 0.8,
-          ease: 'power2.out',
-          stagger: 0.08,
-          scrollTrigger: {
-            trigger: '#contact',
-            start: 'top 80%',
-            once: true
-          }
-        });
-
-        // hold the footer on screen a bit longer
-        const FOOTER_HOLD = 0.9; // 0.5–1.2 is a good range
-        ScrollTrigger.create({
-          trigger: '#contact',
-          start: 'top top',
-          end: () => '+=' + Math.round(window.innerHeight * FOOTER_HOLD),
-          pin: true,
-          pinSpacing: true,
-          anticipatePin: 1
-        });
-      }
-    });
-  </script> -->
+  <script>
+  </script>
 
   <!-- Roles timeline -->
   <script>
