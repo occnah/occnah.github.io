@@ -479,3 +479,82 @@ body {
   /* optional: tiny stroke for extra crisp edges */
   -webkit-text-stroke: 0.4px rgba(0,0,0,0.5);
 }
+
+/* ===== PLANET SECTION ===== */
+.planet {
+  position: relative;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+
+.planet__pin {
+  position: relative;
+  min-height: 100svh; /* pin height controlled via JS */
+}
+
+/* Fullscreen image that we transform into a card */
+.planet__bg {
+  position: absolute;
+  inset: 0;
+  background-image: var(--planet-img, url('assets/planet.png'));
+  background-size: cover;
+  background-position: center;
+  border-radius: 0px;
+  box-shadow: none;
+  transform-origin: top left;
+  will-change: transform, border-radius, box-shadow;
+}
+
+/* Final layout once image has shrunk */
+.planet__inner {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 1.25fr 1.75fr; /* text / card */
+  gap: clamp(18px, 4vw, 48px);
+  align-items: center;
+  padding: clamp(48px, 8vw, 120px) clamp(20px, 6vw, 80px);
+}
+
+@media (max-width: 980px) {
+  .planet__inner {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}
+
+/* Text block: starts hidden, then fades in; lines always visible */
+.planet__left {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.planet__copy {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.planet__line {
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(1.25rem, 2.6vw, 1.75rem);
+  line-height: 1.4;
+  color: var(--muted); /* default muted */
+}
+
+/* Right: invisible sizing target (the bg animates to match this box) */
+.planet__right { position: relative; }
+.planet__card {
+  width: min(100%, 820px);
+  aspect-ratio: 16 / 10;
+  border-radius: 18px;
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.25),
+    0 24px 64px rgba(0,0,0,0.35);
+  visibility: hidden; /* only used as a geometry target */
+}

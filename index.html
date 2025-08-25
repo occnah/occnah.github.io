@@ -155,6 +155,30 @@
     <h2 class="hacker__title">Not bored yet?</h2>
   </section>
 
+  <!-- PLANET GENERATOR (fullscreen -> shrink to card -> spotlight text) -->
+  <section id="planet" class="planet">
+    <div class="planet__pin">
+      <!-- Fullscreen image that will shrink into the card on the right -->
+      <!-- Replace assets/planet.png with your real image path -->
+      <div class="planet__bg" style="--planet-img: url('assets/indaproj.png');"></div>
+
+      <!-- Final layout (text left, card right) -->
+      <div class="planet__inner">
+        <div class="planet__left">
+          <ul class="planet__copy" aria-label="Planet generator details">
+            <li class="planet__line">Planet generator.</li>
+            <li class="planet__line">Entirely handmade with math.</li>
+            <li class="planet__line">Optimized with OpenGL.</li>
+          </ul>
+        </div>
+        <div class="planet__right">
+          <!-- Invisible sizing target; the background image animates to this rect -->
+          <div class="planet__card case__shot" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Vanta on HERO -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
@@ -442,6 +466,87 @@
       window.addEventListener('DOMContentLoaded', initHackerCanvas);
     })();
     </script>
+
+    <script>
+      // PLANET: full-bleed -> shrink-to-card -> spotlight lines
+      window.addEventListener('DOMContentLoaded', () => {
+        if (!window.gsap || !window.ScrollTrigger) return;
+        gsap.registerPlugin(ScrollTrigger);
+
+        const section = document.querySelector('#planet');
+        if (!section) return;
+
+        const bg    = section.querySelector('.planet__bg');
+        const card  = section.querySelector('.planet__card');
+        const left  = section.querySelector('.planet__left');
+        const lines = gsap.utils.toArray('.planet__line');
+
+        // helper to compute transform needed to fit bg into card rect
+        function calcToVals() {
+          const secRect  = section.getBoundingClientRect();
+          const cardRect = card.getBoundingClientRect();
+          const x = cardRect.left - secRect.left;
+          const y = cardRect.top  - secRect.top;
+          const scaleX = cardRect.width  / secRect.width;
+          const scaleY = cardRect.height / secRect.height;
+          return { x, y, scaleX, scaleY };
+        }
+
+        // Timeline with pin & scrub
+        const tlPlanet = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: 'top top',
+            end: () => '+=' + Math.round(window.innerHeight * 2.6), // overall scroll length
+            scrub: 0.7,
+            pin: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true
+          }
+        });
+
+        // Phase A: shrink bg to card position with rounded corners & shadow
+        tlPlanet.to(bg, {
+          duration: 1.15,
+          ease: 'power2.inOut',
+          borderRadius: 18,
+          boxShadow: '0 8px 24px rgba(0,0,0,0.25), 0 24px 64px rgba(0,0,0,0.35)',
+          transformOrigin: 'top left',
+          x: () => calcToVals().x,
+          y: () => calcToVals().y,
+          scaleX: () => calcToVals().scaleX,
+          scaleY: () => calcToVals().scaleY
+        });
+
+        // Phase B: reveal the text block
+        tlPlanet.to(left, {
+          duration: 0.7,
+          opacity: 1,
+          y: 0,
+          ease: 'power2.out'
+        });
+
+        // Phase C: spotlight each line (white) while others stay muted, Apple-style
+        // Ensure all lines are visible; we'll just color-cycle.
+        lines.forEach((line, i) => {
+          // highlight current
+          tlPlanet.to(line, { color: '#ffffff', duration: 0.35, ease: 'power1.out' });
+
+          // hold briefly
+          tlPlanet.to({}, { duration: 0.35 });
+
+          // return previous to muted while the next highlights
+          if (i > 0) {
+            tlPlanet.to(lines[i - 1], { color: 'var(--muted)', duration: 0.3, ease: 'power1.in' }, '<');
+          }
+        });
+
+        // Keep geometry in sync on resize/refresh
+        ScrollTrigger.addEventListener('refreshInit', () => {
+          gsap.set(bg, { clearProps: 'x,y,scaleX,scaleY' });
+        });
+      });
+  </script>
 
 </body>
 </html>
