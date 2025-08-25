@@ -568,3 +568,19 @@ body {
 #planet .planet__line {
   color: var(--planet-muted);
 }
+
+/* Stack multiple images inside the existing case card */
+.case__shot--stack { position: relative; overflow: hidden; }
+.case__shot--stack .case__img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0; /* GSAP will control */
+  transition: opacity .2s linear; /* nice on refresh */
+}
+
+/* Respect reduced motion: just show the first image */
+@media (prefers-reduced-motion: reduce) {
+  .case__shot--stack .case__img { opacity: 0 !important; }
+  .case__shot--stack .case__img:first-child { opacity: 1 !important; }
+}

@@ -147,6 +147,29 @@
     </div>
   </section>
 
+  <!-- STICKY CASE STUDY: APPS (static text, images switch) -->
+  <section id="case-apps" class="case case--flip">
+    <div class="case__inner">
+      <!-- Left: sticky image card with stacked images -->
+      <div class="case__right">
+        <figure class="case__shot case__shot--stack">
+          <!-- Replace src paths with your real assets -->
+          <img class="case__img" src="assets/gymtrack34.png" alt="App interface 1" loading="lazy" decoding="async" />
+          <img class="case__img" src="assets/calcrn2.png" alt="App interface 2" loading="lazy" decoding="async" />
+          <img class="case__img" src="assets/hakyo.png" alt="App interface 3" loading="lazy" decoding="async" />
+          <figcaption class="visually-hidden">App gallery cycling through three UIs.</figcaption>
+        </figure>
+      </div>
+
+      <!-- Right: static copy -->
+      <div class="case__left">
+        <div class="case__panel">
+          <p class="case__text">I have also made apps.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CONTACT (fullscreen) -->
   <section id="contact" class="contact contact--hero" role="contentinfo">
     <div class="contact__wrap">
@@ -555,6 +578,69 @@
       gsap.set(bg, { clearProps: 'left,top,width,height' });
     });
   });
+  </script>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!window.gsap || !window.ScrollTrigger) return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      const section = document.querySelector('#case-apps');
+      if (!section) return;
+
+      const images = gsap.utils.toArray('#case-apps .case__shot--stack .case__img');
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Initial states
+      gsap.set(images, { opacity: 0 });
+      gsap.set(images[0], { opacity: 1 });
+
+      // Pin + scrub timeline: fade 1->2->3 with a little hold on each
+      if (!prefersReduced) {
+        const hold   = 2;  // how long each image is "fully on"
+        const fade   = 0.1;  // crossfade duration
+        const totalH = images.length * (hold + fade); // used just for relative spacing
+
+        const tlApps = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: 'top top',
+            end: () => '+=' + Math.round(window.innerHeight * 0.9), // same feel as your other cases
+            scrub: 0.6,
+            pin: true,
+            anticipatePin: 1
+          }
+        });
+
+        // Crossfades
+        // img0 (already visible) -> img1
+        if (images[1]) {
+          tlApps
+            .to({}, { duration: hold })
+            .to(images[1], { opacity: 1, duration: fade, ease: 'power2.inOut' }, '<')
+            .to(images[0], { opacity: 0, duration: fade, ease: 'power2.inOut' }, '<');
+        }
+        // img1 -> img2
+        if (images[2]) {
+          tlApps
+            .to({}, { duration: hold })
+            .to(images[2], { opacity: 1, duration: fade, ease: 'power2.inOut' }, '<')
+            .to(images[1], { opacity: 0, duration: fade, ease: 'power2.inOut' }, '<');
+        }
+
+        // Subtle parallax on the card (matches other cases)
+        gsap.to('#case-apps .case__shot', {
+          yPercent: -6,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true
+          }
+        });
+      }
+    });
   </script>
 
 </body>
