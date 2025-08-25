@@ -41,7 +41,7 @@
         <!-- All phrases are stacked; we animate opacity/position on scroll -->
         <div class="role"><span class="role__text">AI Engineer</span></div>
         <div class="role"><span class="role__text">DevOps Specialist</span></div>
-        <div class="role"><span class="role__text">Indie Game Dev</span></div>
+        <div class="role"><span class="role__text">Fullstack Dev</span></div>
       </div>
     </div>
   </section>
@@ -67,7 +67,7 @@
       <!-- Right: sticky image -->
       <div class="case__right">
         <figure class="case__shot">
-          <img src="assets/hakyo.png" alt="THS Business website design by Ossian" loading="lazy" />
+          <img src="assets/thsb.png" alt="THS Business website design by Ossian" loading="lazy" />
           <figcaption class="visually-hidden">Pinned website mockup while copy scrolls.</figcaption>
         </figure>
       </div>
@@ -81,7 +81,7 @@
       <div class="case__right">
         <figure class="case__shot">
           <!-- Replace with your real Gradr image if different -->
-          <img src="assets/calcrn2.png" alt="Gradr platform UI" loading="lazy" />
+          <img src="assets/gradr.png" alt="Gradr platform UI" loading="lazy" />
           <figcaption class="visually-hidden">Pinned Gradr mockup while copy scrolls.</figcaption>
         </figure>
       </div>
@@ -112,6 +112,37 @@
     </div>
   </section>
 
+<footer id="contact" class="contact contact--hero" role="contentinfo">
+  <div class="contact__wrap">
+    <p class="contact__eyebrow">Contact</p>
+
+    <h2 class="contact__title">Let’s build something great.</h2>
+    <p class="contact__sub">Open to AI engineering, DevOps and Fullstack projects</p>
+
+    <div class="contact__actions">
+      <!-- Swap to your real email/LinkedIn -->
+      <a class="contact__btn contact__btn--primary" href="mailto:ossianst@kth.se" aria-label="Email Ossian">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24">
+          <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2Z" fill="currentColor"/>
+        </svg>
+        <span>Email me</span>
+      </a>
+
+      <a class="contact__btn" href="https://www.linkedin.com/in/your-handle" target="_blank" rel="noopener" aria-label="Ossian on LinkedIn">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24">
+          <path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5ZM0 8h5v16H0V8Zm7.5 0h4.8v2.2h.07c.67-1.2 2.3-2.46 4.73-2.46 5.06 0 6 3.33 6 7.65V24h-5v-7.3c0-1.74-.03-3.97-2.42-3.97-2.43 0-2.8 1.89-2.8 3.84V24h-5V8Z" fill="currentColor"/>
+        </svg>
+        <span>LinkedIn</span>
+      </a>
+    </div>
+
+    <div class="contact__meta">
+      <a href="mailto:ossianst@kth.se">ossianst@kth.se</a>
+      <span aria-hidden="true">·</span>
+      <span>Stockholm, Sweden</span>
+    </div>
+  </div>
+</footer>
 
   <!-- Vanta on HERO -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
@@ -152,6 +183,23 @@
   <!-- GSAP + ScrollTrigger (for scroll-driven role transitions) -->
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    if (window.gsap && window.ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('#contact .contact__wrap > *', {
+        opacity: 0, y: 20, duration: 0.8, ease: 'power2.out',
+        stagger: 0.08,
+        scrollTrigger: {
+          trigger: '#contact',
+          start: 'top 80%',
+          once: true
+        }
+      });
+    }
+  });
+</script>
 
 <script>
   // Scroll-driven role cycling
