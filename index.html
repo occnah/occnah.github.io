@@ -149,6 +149,12 @@
     </div>
   </footer>
 
+  <!-- HACKER WALL -->
+  <section id="hacker" class="hacker">
+    <canvas id="hacker-canvas" aria-hidden="true"></canvas>
+    <h2 class="hacker__title">Not bored yet?</h2>
+  </section>
+
   <!-- Vanta on HERO -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
@@ -326,6 +332,116 @@
       });
     });
   </script>
+
+  <script>
+    /* Fullscreen animated hacker text background (canvas) — refined */
+    (function () {
+      function initHackerCanvas() {
+        const section = document.getElementById('hacker');
+        if (!section) return;
+
+        const canvas = document.getElementById('hacker-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // characters + EXACTLY three colors (from your reference)
+        const CHARS  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789{}[]()<>=+-*/|\\_:#$%&@!?;.,~^';
+        const COLORS = ['#60dca3', '#2b4439', '#5fb0d3']; // mint, deep green, blue
+
+        let width, height, cols, rows, cell, fontSize, grid = [];
+        let active = false;      // only animate while in view
+        let last = 0;
+        const interval = 55;     // faster updates (ms) -> more chaotic
+        const changeRatio = 0.18; // % of cells to change per frame
+
+        function resize() {
+          const dpr = window.devicePixelRatio || 1;
+          width = section.clientWidth;
+          height = section.clientHeight;
+
+          canvas.width  = Math.floor(width * dpr);
+          canvas.height = Math.floor(height * dpr);
+          canvas.style.width  = width + 'px';
+          canvas.style.height = height + 'px';
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+          // Smaller letters
+          fontSize = Math.max(11, Math.min(18, Math.round(width / 85)));
+          cell = fontSize * 1.1;
+
+          ctx.font = `${fontSize}px ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, monospace`;
+          ctx.textBaseline = 'top';
+
+          cols = Math.ceil(width / cell);
+          rows = Math.ceil(height / cell);
+
+          grid = new Array(cols * rows).fill(0).map(() => ({
+            ch: CHARS[(Math.random() * CHARS.length) | 0],
+            color: COLORS[(Math.random() * COLORS.length) | 0]
+          }));
+        }
+
+        function render() {
+          ctx.fillStyle = '#0b0f1a';
+          ctx.fillRect(0, 0, width, height);
+
+          let i = 0;
+          for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+              const cellData = grid[i++];
+              ctx.fillStyle = cellData.color;
+              ctx.fillText(cellData.ch, c * cell, r * cell);
+            }
+          }
+        }
+
+        function tick(t) {
+          requestAnimationFrame(tick);
+          if (!active) return;           // pause when off-screen
+          if (t - last < interval) return;
+          last = t;
+
+          // flip a bigger chunk of cells per frame for a chaotic feel
+          const changes = Math.max(1, Math.floor(grid.length * changeRatio));
+          for (let k = 0; k < changes; k++) {
+            const idx = (Math.random() * grid.length) | 0;
+            grid[idx].ch   = CHARS[(Math.random() * CHARS.length) | 0];
+            grid[idx].color = COLORS[(Math.random() * COLORS.length) | 0];
+          }
+
+          render();
+        }
+
+        resize();
+        window.addEventListener('resize', resize);
+        requestAnimationFrame(tick);
+
+        // Title reveal on scroll (matches your other sections)
+        if (window.gsap && window.ScrollTrigger) {
+          gsap.registerPlugin(ScrollTrigger);
+          gsap.set('#hacker .hacker__title', { opacity: 0, y: 30 });
+          ScrollTrigger.create({
+            trigger: section,
+            start: 'top 75%',
+            onEnter: () => {
+              active = true; // start animating
+              gsap.to('#hacker .hacker__title', {
+                opacity: 1, y: 0, duration: 0.9, ease: 'power2.out'
+              });
+            },
+            onLeaveBack: () => {
+              active = false; // stop animating when scrolling away
+              gsap.set('#hacker .hacker__title', { opacity: 0, y: 30 });
+            }
+          });
+        } else {
+          // Fallback: animate immediately if GSAP isn't available
+          active = true;
+        }
+      }
+
+      window.addEventListener('DOMContentLoaded', initHackerCanvas);
+    })();
+    </script>
 
 </body>
 </html>

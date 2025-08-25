@@ -443,3 +443,35 @@ body {
 .g {
   -webkit-text-fill-color: transparent;
 }
+
+/* ===== HACKER WALL (fullscreen) ===== */
+.hacker {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  overflow: hidden;
+}
+.hacker #hacker-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.hacker__title {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  color: #fff;
+  /* soft halo/shadow like the screenshot */
+  text-shadow:
+    0 2px 0 rgba(0,0,0,0.35),
+    0 10px 30px rgba(0,0,0,0.55),
+    0 0 30px rgba(0,0,0,0.35);
+}
