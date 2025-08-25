@@ -1,9 +1,18 @@
-/* Base */
+/* =========================
+   Base / Tokens
+========================= */
 :root{
   --bg: #0b0f1a;
   --text: #ffffff;
   --muted: #c9d4ff;
+  --accent: #0f6fff;
+
+  /* gradient presets */
+  --grad-blue: linear-gradient(180deg, #ffffff, #b8c6ff);
+  --grad-brand: linear-gradient(90deg, #79a8ff, #4bdeff, #b8ffcb);
+  --grad-metric: linear-gradient(90deg, #9cffd0, #6ddcff, #a6b1ff);
 }
+
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body {
@@ -11,34 +20,58 @@ body {
   font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   color: var(--text);
   background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* HERO */
+/* Utility: gradient text */
+.g {
+  background: var(--grad-blue);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.brand {
+  font-weight: 800;
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  white-space: nowrap;
+}
+.metric {
+  font-weight: 800;
+  background: var(--grad-metric);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  white-space: nowrap;
+}
+
+/* =========================
+   HERO
+========================= */
 .hero {
   position: relative;
   height: 100svh;           /* full screen incl. mobile dynamic bars */
   min-height: 480px;
   overflow: hidden;
   display: grid;
-  place-items: center;      /* centers the content block */
+  place-items: center;
   text-align: center;
   padding: 0 2rem;
 }
-
 .vanta {
   position: absolute;
-  inset: 0;                 /* full bleed */
+  inset: 0;
   z-index: 0;
 }
-
 .hero__content {
   position: relative;
-  z-index: 1;               /* above Vanta */
+  z-index: 1;
   display: grid;
   gap: 0.75rem;
-  backdrop-filter: none;    /* feel free to add blur later if you want */
 }
-
 .hero__title {
   font-weight: 800;
   font-size: clamp(2rem, 6vw, 4rem);
@@ -46,7 +79,6 @@ body {
   letter-spacing: -0.02em;
   margin: 0;
 }
-
 .hero__subtitle {
   margin: 0;
   font-weight: 600;
@@ -74,29 +106,21 @@ body {
   opacity: 0.9;
   animation: bob 1.8s ease-in-out infinite;
 }
-
 .scroll-cue:hover { opacity: 1; }
 .scroll-cue svg { display: block; fill: currentColor; }
-
 @keyframes bob {
   0%, 100% { transform: translate(-50%, 0); }
   50%      { transform: translate(-50%, 6px); }
 }
 
-/* Placeholder next section just to enable scrolling now */
-.spacer {
-  height: 120vh;
-  background: linear-gradient(180deg, transparent, rgba(11,15,26,0.85));
-}
-
-/* ===== ROLES SECTION ===== */
+/* =========================
+   ROLES (Pinned)
+========================= */
 .roles {
   background: var(--bg);
   color: var(--text);
 }
-
 .roles__inner {
-  /* we’ll pin this section with GSAP; keep a generous height via pinning */
   min-height: 100svh;
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -104,15 +128,12 @@ body {
   align-items: center;
   padding: clamp(48px, 8vw, 120px) clamp(20px, 6vw, 80px);
 }
-
 @media (max-width: 860px) {
   .roles__inner {
     grid-template-columns: 1fr;
     gap: 32px;
   }
 }
-
-/* Left column (fixed within the pinned section) */
 .roles__fixed {
   margin: 0;
   font-weight: 800;
@@ -122,18 +143,14 @@ body {
   color: #ffffff;
   opacity: 0.95;
 }
-
-/* Right column with stacked roles */
 .roles__right {
   position: relative;
   min-height: clamp(40vh, 48vh, 56vh);
   display: grid;
   place-items: center;
-  /* optional subtle separator on large screens */
   border-left: 1px solid rgba(255,255,255,0.08);
   padding-left: clamp(12px, 1.8vw, 24px);
 }
-
 @media (max-width: 860px) {
   .roles__right {
     border-left: none;
@@ -141,7 +158,6 @@ body {
     min-height: 40vh;
   }
 }
-
 .role {
   position: absolute;
   inset: 0;
@@ -149,7 +165,6 @@ body {
   place-items: center;
   pointer-events: none;
 }
-
 .role__text {
   font-weight: 800;
   font-size: clamp(1.8rem, 6vw, 4rem);
@@ -157,42 +172,19 @@ body {
   text-align: center;
   will-change: transform, opacity;
   filter: drop-shadow(0 6px 20px rgba(0,0,0,0.25));
-  /* gradient text (nice with dark bg) */
-  background: linear-gradient(180deg, #ffffff, #b8c6ff);
+  background: var(--grad-blue);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-/* Next section placeholder so you can scroll past the pin */
-.next-section {
-  min-height: 120vh;
-  display: grid;
-  place-items: center;
-  background:
-    radial-gradient(80% 80% at 50% 0%, rgba(15,111,255,0.15) 0%, rgba(15,111,255,0) 60%),
-    var(--bg);
-}
-.next-section .container {
-  text-align: center;
-  max-width: 800px;
-  padding: 0 24px;
-}
-.next-section h3 {
-  margin: 0 0 12px;
-  font-size: clamp(1.5rem, 3vw, 2rem);
-}
-.next-section p {
-  margin: 0;
-  color: var(--muted);
-}
-
-/* ===== STICKY CASE STUDY ===== */
+/* =========================
+   STICKY CASE SECTIONS
+========================= */
 .case {
   background: var(--bg);
   color: var(--text);
 }
-
 .case__inner {
   min-height: 100svh;
   display: grid;
@@ -201,7 +193,6 @@ body {
   align-items: center;
   padding: clamp(48px, 8vw, 120px) clamp(20px, 6vw, 80px);
 }
-
 @media (max-width: 980px) {
   .case__inner {
     grid-template-columns: 1fr;
@@ -209,34 +200,33 @@ body {
   }
 }
 
+/* Left = copy panels (stacked, GSAP reveals) */
 .case__left {
   position: relative;
   display: grid;
-  /* stack “panels” at same spot; GSAP controls visibility */
   grid-template-rows: 1fr;
 }
-
 .case__panel {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center start;
 }
-
 .case__text {
-  max-width: 40ch; /* keep lines shorter for punchier look */
-  font-size: clamp(1.25rem, 2.6vw, 1.75rem); /* larger! */
+  max-width: 40ch; /* punchy line length */
+  font-size: clamp(1.25rem, 2.6vw, 1.75rem);
   line-height: 1.4;
   margin: 0;
   color: var(--muted);
   font-weight: 600;
 }
 
-
+/* Right = media (sticky visual) */
 .case__right {
   position: relative;
 }
 
+/* Clickable shot (wrap your <img> in an <a>) */
 .case__shot {
   position: relative;
   margin: 0;
@@ -250,12 +240,48 @@ body {
     0 24px 64px rgba(0,0,0,0.35);
   background: rgba(255,255,255,0.04);
 }
-
-.case__shot img {
+.case__shot a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border-radius: inherit;
+  cursor: pointer;
+}
+.case__shot img,
+.case__shot a img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 400ms ease;
+}
+.case__shot:hover img,
+.case__shot a:hover img { transform: scale(1.02); }
+.case__shot a:focus-visible {
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.9), 0 0 0 6px rgba(15,111,255,0.6);
+}
+
+/* Flip layout (image left, text right) */
+.case--flip .case__inner {
+  grid-template-columns: 1.75fr 1.25fr;
+}
+.case--flip .case__right { order: 1; }
+.case--flip .case__left  { order: 2; }
+
+/* Section-specific tweaks (optional) */
+#case-gradr .case__text {
+  max-width: 42ch;
+  line-height: 1.45;
+}
+
+/* Tiny note under lines that need it */
+.case__note {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  color: rgba(255,255,255,0.6);
 }
 
 /* a11y helper */
@@ -267,58 +293,20 @@ body {
   white-space: nowrap; border: 0;
 }
 
-/* Flip layout (image left, text right) */
-.case--flip .case__inner {
-  grid-template-columns: 1.75fr 1.25fr;
-}
-
-/* Reuse existing .case__right for media and .case__left for copy */
-.case--flip .case__right { order: 1; }
-.case--flip .case__left  { order: 2; }
-
-/* Slightly roomier copy for this section */
-#case-gradr .case__text {
-  max-width: 42ch;
-  font-size: clamp(1.25rem, 2.6vw, 1.75rem);
-  line-height: 1.45;
-}
-
-/* Gradient number “7+” */
-.grad-number {
-  font-weight: 800;
-  background: linear-gradient(90deg, #79a8ff, #4bdeff, #b8ffcb);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  white-space: nowrap;
-}
-
-/* Tiny note under the third line */
-.case__note {
-  display: block;
-  margin-top: 8px;
-  font-size: 0.75rem;
-  line-height: 1.2;
-  color: rgba(255,255,255,0.6);
-}
-
-:root{
-  --accent: #0f6fff;
-}
-
-/* ===== CONTACT (fullscreen, sleek) ===== */
+/* =========================
+   CONTACT (Fullscreen, sleek)
+========================= */
 .contact.contact--hero {
   position: relative;
-  min-height: 100svh;                 /* fullscreen like other sections */
+  min-height: 100svh;
   display: grid;
   place-items: center;
   background: var(--bg);
   overflow: clip;
-  isolation: isolate;                  /* keep glows contained */
+  isolation: isolate;
   padding: clamp(56px, 8vw, 96px) clamp(20px, 6vw, 64px);
 }
-
-/* subtle 1px hairline at the top */
+/* top hairline */
 .contact.contact--hero::before {
   content: "";
   position: absolute;
@@ -326,25 +314,21 @@ body {
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
   opacity: 0.6;
 }
-
-/* very soft spotlight for depth (kept minimal for Apple vibe) */
+/* soft spotlight */
 .contact.contact--hero::after {
   content: "";
   position: absolute; inset: -20% -10% auto -10%;
   height: 70%;
-  background: radial-gradient(60% 60% at 50% 10%,
-             color-mix(in oklab, var(--accent) 24%, transparent) 0%,
-             transparent 60%);
+  background:
+    radial-gradient(60% 60% at 50% 10%, rgba(15,111,255,0.24) 0%, transparent 60%);
   filter: blur(40px);
   z-index: -1;
 }
-
 .contact__wrap {
   max-width: 1100px;
   width: 100%;
   text-align: center;
 }
-
 .contact__eyebrow {
   margin: 0 0 8px;
   font-weight: 700;
@@ -353,16 +337,14 @@ body {
   font-size: 0.85rem;
   color: rgba(255,255,255,0.6);
 }
-
 .contact__title {
   margin: 0;
   font-weight: 800;
   font-size: clamp(2.5rem, 7vw, 4rem);
   letter-spacing: -0.02em;
   line-height: 1.05;
-  color: #fff; /* cleaner than gradient for Apple feel */
+  color: #fff;
 }
-
 .contact__sub {
   margin: 10px auto clamp(28px, 4vw, 40px);
   max-width: 54ch;
@@ -370,18 +352,14 @@ body {
   font-weight: 600;
   line-height: 1.45;
 }
-
-/* Actions */
 .contact__actions {
   display: inline-grid;
   grid-auto-flow: column;
   gap: 14px;
 }
-
 @media (max-width: 640px) {
   .contact__actions { grid-auto-flow: row; }
 }
-
 .contact__btn {
   display: inline-flex;
   align-items: center;
@@ -396,10 +374,8 @@ body {
   border: 1px solid rgba(255,255,255,0.18);
   background: rgba(255,255,255,0.04);
 }
-
 .contact__btn:hover { transform: translateY(-1px); background: rgba(255,255,255,0.07); }
 .contact__btn:active { transform: translateY(0); }
-
 .contact__btn--primary {
   color: #0b0f1a; /* dark text on light pill */
   background: #fff;
@@ -407,15 +383,11 @@ body {
   box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset, 0 6px 24px rgba(0,0,0,0.24);
 }
 .contact__btn--primary:hover { box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 10px 32px rgba(0,0,0,0.32); }
-
 .contact__btn svg { display: block; }
-
 .contact__btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 60%, transparent);
+  box-shadow: 0 0 0 3px rgba(15,111,255,0.6);
 }
-
-/* Meta (email shown plainly, tiny divider dot) */
 .contact__meta {
   margin-top: clamp(16px, 2vw, 22px);
   color: rgba(255,255,255,0.65);
@@ -426,17 +398,19 @@ body {
   align-items: center;
   flex-wrap: wrap;
 }
-
 .contact__meta a {
   color: inherit;
   text-decoration: none;
 }
 .contact__meta a:hover { text-decoration: underline; }
 
-/* Respect reduced motion */
+/* =========================
+   Motion prefs
+========================= */
 @media (prefers-reduced-motion: reduce) {
   .contact__btn,
   .contact__title,
-  .contact__sub { transition: none !important; }
+  .contact__sub,
+  .case__shot img,
+  .scroll-cue { transition: none !important; animation: none !important; }
 }
-
