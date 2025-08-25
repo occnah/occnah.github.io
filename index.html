@@ -216,18 +216,36 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 
   <!-- Contact entrance -->
+  <!-- CONTACT entrance + stronger SCROLL HOLD -->
   <script>
     window.addEventListener('DOMContentLoaded', () => {
       if (window.gsap && window.ScrollTrigger) {
         gsap.registerPlugin(ScrollTrigger);
+
+        // entrance
         gsap.from('#contact .contact__wrap > *', {
-          opacity: 0, y: 20, duration: 0.8, ease: 'power2.out',
+          delay: 0.35,
+          opacity: 0,
+          y: 20,
+          duration: 0.8,
+          ease: 'power2.out',
           stagger: 0.08,
           scrollTrigger: {
             trigger: '#contact',
             start: 'top 80%',
             once: true
           }
+        });
+
+        // hold the footer on screen a bit longer
+        const FOOTER_HOLD = 0.9; // 0.5–1.2 is a good range
+        ScrollTrigger.create({
+          trigger: '#contact',
+          start: 'top top',
+          end: () => '+=' + Math.round(window.innerHeight * FOOTER_HOLD),
+          pin: true,
+          pinSpacing: true,
+          anticipatePin: 1
         });
       }
     });
@@ -358,195 +376,192 @@
   </script>
 
   <script>
-    /* Fullscreen animated hacker text background (canvas) — refined */
-    (function () {
-      function initHackerCanvas() {
-        const section = document.getElementById('hacker');
-        if (!section) return;
+  /* HACKER WALL: pinned/held, faster updates, runs only while held */
+  (function () {
+    function initHackerCanvas() {
+      const section = document.getElementById('hacker');
+      if (!section) return;
 
-        const canvas = document.getElementById('hacker-canvas');
-        const ctx = canvas.getContext('2d');
+      const canvas = document.getElementById('hacker-canvas');
+      const ctx = canvas.getContext('2d');
+      const CHARS  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789{}[]()<>=+-*/|\\_:#$%&@!?;.,~^';
+      const COLORS = ['#60dca3', '#2b4439', '#5fb0d3'];
 
-        // characters + EXACTLY three colors (from your reference)
-        const CHARS  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789{}[]()<>=+-*/|\\_:#$%&@!?;.,~^';
-        const COLORS = ['#60dca3', '#2b4439', '#5fb0d3']; // mint, deep green, blue
+      let width, height, cols, rows, cell, fontSize, grid = [];
+      let active = false;
+      let last = 0;
+      const interval = 28;     // faster/more chaotic
+      const changeRatio = 0.22;
 
-        let width, height, cols, rows, cell, fontSize, grid = [];
-        let active = false;      // only animate while in view
-        let last = 0;
-        const interval = 55;     // faster updates (ms) -> more chaotic
-        const changeRatio = 0.18; // % of cells to change per frame
+      function resize() {
+        const dpr = window.devicePixelRatio || 1;
+        width = section.clientWidth;
+        height = section.clientHeight;
 
-        function resize() {
-          const dpr = window.devicePixelRatio || 1;
-          width = section.clientWidth;
-          height = section.clientHeight;
+        canvas.width  = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        canvas.style.width  = width + 'px';
+        canvas.style.height = height + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-          canvas.width  = Math.floor(width * dpr);
-          canvas.height = Math.floor(height * dpr);
-          canvas.style.width  = width + 'px';
-          canvas.style.height = height + 'px';
-          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        fontSize = Math.max(11, Math.min(18, Math.round(width / 85))); // smaller letters
+        cell = fontSize * 1.1;
 
-          // Smaller letters
-          fontSize = Math.max(11, Math.min(18, Math.round(width / 85)));
-          cell = fontSize * 1.1;
+        ctx.font = `${fontSize}px ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, monospace`;
+        ctx.textBaseline = 'top';
 
-          ctx.font = `${fontSize}px ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, monospace`;
-          ctx.textBaseline = 'top';
+        cols = Math.ceil(width / cell);
+        rows = Math.ceil(height / cell);
 
-          cols = Math.ceil(width / cell);
-          rows = Math.ceil(height / cell);
+        grid = new Array(cols * rows).fill(0).map(() => ({
+          ch: CHARS[(Math.random() * CHARS.length) | 0],
+          color: COLORS[(Math.random() * COLORS.length) | 0]
+        }));
+      }
 
-          grid = new Array(cols * rows).fill(0).map(() => ({
-            ch: CHARS[(Math.random() * CHARS.length) | 0],
-            color: COLORS[(Math.random() * COLORS.length) | 0]
-          }));
-        }
-
-        function render() {
-          ctx.fillStyle = '#0b0f1a';
-          ctx.fillRect(0, 0, width, height);
-
-          let i = 0;
-          for (let r = 0; r < rows; r++) {
-            for (let c = 0; c < cols; c++) {
-              const cellData = grid[i++];
-              ctx.fillStyle = cellData.color;
-              ctx.fillText(cellData.ch, c * cell, r * cell);
-            }
+      function render() {
+        ctx.fillStyle = '#0b0f1a';
+        ctx.fillRect(0, 0, width, height);
+        let i = 0;
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const cellData = grid[i++];
+            ctx.fillStyle = cellData.color;
+            ctx.fillText(cellData.ch, c * cell, r * cell);
           }
-        }
-
-        function tick(t) {
-          requestAnimationFrame(tick);
-          if (!active) return;           // pause when off-screen
-          if (t - last < interval) return;
-          last = t;
-
-          // flip a bigger chunk of cells per frame for a chaotic feel
-          const changes = Math.max(1, Math.floor(grid.length * changeRatio));
-          for (let k = 0; k < changes; k++) {
-            const idx = (Math.random() * grid.length) | 0;
-            grid[idx].ch   = CHARS[(Math.random() * CHARS.length) | 0];
-            grid[idx].color = COLORS[(Math.random() * COLORS.length) | 0];
-          }
-
-          render();
-        }
-
-        resize();
-        window.addEventListener('resize', resize);
-        requestAnimationFrame(tick);
-
-        // Title reveal on scroll (matches your other sections)
-        if (window.gsap && window.ScrollTrigger) {
-          gsap.registerPlugin(ScrollTrigger);
-          gsap.set('#hacker .hacker__title', { opacity: 0, y: 30 });
-          ScrollTrigger.create({
-            trigger: section,
-            start: 'top 75%',
-            onEnter: () => {
-              active = true; // start animating
-              gsap.to('#hacker .hacker__title', {
-                opacity: 1, y: 0, duration: 0.9, ease: 'power2.out'
-              });
-            },
-            onLeaveBack: () => {
-              active = false; // stop animating when scrolling away
-              gsap.set('#hacker .hacker__title', { opacity: 0, y: 30 });
-            }
-          });
-        } else {
-          // Fallback: animate immediately if GSAP isn't available
-          active = true;
         }
       }
 
-      window.addEventListener('DOMContentLoaded', initHackerCanvas);
-    })();
-    </script>
+      function tick(t) {
+        requestAnimationFrame(tick);
+        if (!active) return;
+        if (t - last < interval) return;
+        last = t;
+
+        const changes = Math.max(1, Math.floor(grid.length * changeRatio));
+        for (let k = 0; k < changes; k++) {
+          const idx = (Math.random() * grid.length) | 0;
+          grid[idx].ch   = CHARS[(Math.random() * CHARS.length) | 0];
+          grid[idx].color = COLORS[(Math.random() * COLORS.length) | 0];
+        }
+        render();
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+      requestAnimationFrame(tick);
+
+      // Title reveal
+      if (window.gsap && window.ScrollTrigger) {
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.set('#hacker .hacker__title', { opacity: 0, y: 30 });
+
+        // entrance
+        gsap.to('#hacker .hacker__title', {
+          opacity: 1, y: 0, duration: 0.9, ease: 'power2.out',
+          scrollTrigger: { trigger: section, start: 'top 75%', once: true }
+        });
+
+        // scroll HOLD for the hacker section
+        const HACKER_HOLD = 0.9; // adjust 0.6–1.2 to taste
+        ScrollTrigger.create({
+          trigger: section,
+          start: 'top top',
+          end: () => '+=' + Math.round(window.innerHeight * HACKER_HOLD),
+          pin: true,
+          pinSpacing: true,
+          anticipatePin: 1,
+          onEnter: () => { active = true; },
+          onLeave: () => { active = false; },
+          onEnterBack: () => { active = true; },
+          onLeaveBack: () => { active = false; }
+        });
+      } else {
+        active = true;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', initHackerCanvas);
+  })();
+  </script>
 
     <script>
-      // PLANET: full-bleed -> shrink-to-card -> spotlight lines
-      window.addEventListener('DOMContentLoaded', () => {
-        if (!window.gsap || !window.ScrollTrigger) return;
-        gsap.registerPlugin(ScrollTrigger);
+  // PLANET: full-bleed -> shrink-to-card (no stretch) -> spotlight lines
+  window.addEventListener('DOMContentLoaded', () => {
+    if (!window.gsap || !window.ScrollTrigger) return;
+    gsap.registerPlugin(ScrollTrigger);
 
-        const section = document.querySelector('#planet');
-        if (!section) return;
+    const section = document.querySelector('#planet');
+    if (!section) return;
 
-        const bg    = section.querySelector('.planet__bg');
-        const card  = section.querySelector('.planet__card');
-        const left  = section.querySelector('.planet__left');
-        const lines = gsap.utils.toArray('.planet__line');
+    const bg    = section.querySelector('.planet__bg');
+    const card  = section.querySelector('.planet__card');
+    const left  = section.querySelector('.planet__left');
+    const lines = gsap.utils.toArray('.planet__line');
 
-        // helper to compute transform needed to fit bg into card rect
-        function calcToVals() {
-          const secRect  = section.getBoundingClientRect();
-          const cardRect = card.getBoundingClientRect();
-          const x = cardRect.left - secRect.left;
-          const y = cardRect.top  - secRect.top;
-          const scaleX = cardRect.width  / secRect.width;
-          const scaleY = cardRect.height / secRect.height;
-          return { x, y, scaleX, scaleY };
-        }
+    function targetRect() {
+      const s = section.getBoundingClientRect();
+      const r = card.getBoundingClientRect();
+      return {
+        left: r.left - s.left,
+        top:  r.top  - s.top,
+        width:  r.width,
+        height: r.height
+      };
+    }
 
-        // Timeline with pin & scrub
-        const tlPlanet = gsap.timeline({
-          scrollTrigger: {
-            trigger: section,
-            start: 'top top',
-            end: () => '+=' + Math.round(window.innerHeight * 2.6), // overall scroll length
-            scrub: 0.7,
-            pin: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true
-          }
-        });
+    const tlPlanet = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: () => '+=' + Math.round(window.innerHeight * 2.6),
+        scrub: 0.7,
+        pin: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true
+      }
+    });
 
-        // Phase A: shrink bg to card position with rounded corners & shadow
-        tlPlanet.to(bg, {
-          duration: 1.15,
-          ease: 'power2.inOut',
-          borderRadius: 18,
-          boxShadow: '0 8px 24px rgba(0,0,0,0.25), 0 24px 64px rgba(0,0,0,0.35)',
-          transformOrigin: 'top left',
-          x: () => calcToVals().x,
-          y: () => calcToVals().y,
-          scaleX: () => calcToVals().scaleX,
-          scaleY: () => calcToVals().scaleY
-        });
+    // A) Morph the full-bleed bg into the card box (no non-uniform scale)
+    tlPlanet.to(bg, {
+      duration: 1.15,
+      ease: 'power2.inOut',
+      borderRadius: 18,
+      boxShadow: '0 8px 24px rgba(0,0,0,0.25), 0 24px 64px rgba(0,0,0,0.35)',
+      left:   () => targetRect().left,
+      top:    () => targetRect().top,
+      width:  () => targetRect().width,
+      height: () => targetRect().height
+    }, 0);
 
-        // Phase B: reveal the text block
-        tlPlanet.to(left, {
-          duration: 0.7,
-          opacity: 1,
-          y: 0,
-          ease: 'power2.out'
-        });
+    // B) Reveal the text block
+    tlPlanet.to(left, {
+      duration: 0.7,
+      opacity: 1,
+      y: 0,
+      ease: 'power2.out'
+    });
 
-        // Phase C: spotlight each line (white) while others stay muted, Apple-style
-        // Ensure all lines are visible; we'll just color-cycle.
-        lines.forEach((line, i) => {
-          // highlight current
-          tlPlanet.to(line, { color: '#ffffff', duration: 0.35, ease: 'power1.out' });
+    // C) Spotlight each line (white) with others muted
+    // C) Spotlight each line (white) with others muted
+    lines.forEach((line, i) => {
+      tlPlanet.to(line, { color: '#ffffff', duration: 0.35, ease: 'power1.out' });
+      tlPlanet.to({}, { duration: 0.35 });
+      if (i > 0) {
+        tlPlanet.to(lines[i - 1], {
+          color: 'var(--planet-muted)',   // ← use the local dark grey
+          duration: 0.3,
+          ease: 'power1.in'
+        }, '<');
+      }
+    });
 
-          // hold briefly
-          tlPlanet.to({}, { duration: 0.35 });
-
-          // return previous to muted while the next highlights
-          if (i > 0) {
-            tlPlanet.to(lines[i - 1], { color: 'var(--muted)', duration: 0.3, ease: 'power1.in' }, '<');
-          }
-        });
-
-        // Keep geometry in sync on resize/refresh
-        ScrollTrigger.addEventListener('refreshInit', () => {
-          gsap.set(bg, { clearProps: 'x,y,scaleX,scaleY' });
-        });
-      });
-  </script>
+    // Reset geometry on refresh
+    ScrollTrigger.addEventListener('refreshInit', () => {
+      gsap.set(bg, { clearProps: 'left,top,width,height' });
+    });
+  });
+</script>
 
 </body>
 </html>
