@@ -41,7 +41,7 @@
         <!-- All phrases are stacked; we animate opacity/position on scroll -->
         <div class="role"><span class="role__text">AI Engineer</span></div>
         <div class="role"><span class="role__text">DevOps Specialist</span></div>
-        <div class="role"><span class="role__text">Game Designer</span></div>
+        <div class="role"><span class="role__text">Indie Game Dev</span></div>
       </div>
     </div>
   </section>
@@ -56,11 +56,11 @@
         </div>
 
         <div class="case__panel">
-          <p class="case__text">Designed and scaled AWS infrastructure to handle thousands of job applications and event content reliably.</p>
+          <p class="case__text">I designed and scaled AWS infrastructure to handle thousands of job applications and event content reliably.</p>
         </div>
 
         <div class="case__panel">
-          <p class="case__text">Helping 18,000+ students and 150+ companies every year.</p>
+          <p class="case__text">Helping <span class="grad-number">18,000+</span> students and <span class="grad-number">150+</span> companies every year.</p>
         </div>
       </div>
 
@@ -73,6 +73,45 @@
       </div>
     </div>
   </section>
+
+  <!-- STICKY CASE STUDY: GRADR -->
+  <section id="case-gradr" class="case case--flip">
+    <div class="case__inner">
+      <!-- Left: sticky image -->
+      <div class="case__right">
+        <figure class="case__shot">
+          <!-- Replace with your real Gradr image if different -->
+          <img src="assets/calcrn2.png" alt="Gradr platform UI" loading="lazy" />
+          <figcaption class="visually-hidden">Pinned Gradr mockup while copy scrolls.</figcaption>
+        </figure>
+      </div>
+
+      <!-- Right: scrolling copy -->
+      <div class="case__left">
+        <div class="case__panel">
+          <p class="case__text">As a software engineer at Gradr...</p>
+        </div>
+
+        <div class="case__panel">
+          <p class="case__text">
+            We create AI solutions for schools—automating grading tasks and letting students practice custom, teacher-tuned questions at scale.
+          </p>
+        </div>
+
+        <div class="case__panel">
+          <p class="case__text">
+            Saving teachers <span class="grad-number">7+</span> hours every week*...
+          </p>
+          <small class="case__note">* Based on Gradr’s internal stats.</small>
+        </div>
+
+        <div class="case__panel">
+          <p class="case__text">and helping <span class="grad-number">thousands</span> of students reach their full potential.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
 
   <!-- Vanta on HERO -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
@@ -203,6 +242,53 @@
     });
   });
 </script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    // === Sticky case: GRADR (image left, text right) ===
+    const gradrPanels = gsap.utils.toArray('#case-gradr .case__panel');
+    const gradrTexts  = gradrPanels.map(p => p.querySelector('.case__text'));
+    const gradrNotes  = gradrPanels.map(p => p.querySelector('.case__note')).filter(Boolean);
+
+    gsap.set(gradrTexts, { opacity: 0, y: 30 });
+    gsap.set(gradrNotes, { opacity: 0, y: 20 });
+
+    const tlGradr = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#case-gradr',
+        start: 'top top',
+        end: () => '+=' + (gradrPanels.length * window.innerHeight * 0.9),
+        scrub: 0.6,
+        pin: true,
+        anticipatePin: 1
+      }
+    });
+
+    gradrPanels.forEach((panel) => {
+      const t = panel.querySelector('.case__text');
+      const n = panel.querySelector('.case__note');
+
+      tlGradr
+        .to(t, { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' })
+        .to(n || {}, { opacity: 1, y: 0, duration: n ? 0.6 : 0, ease: 'power2.out' }, '<+=0.2')
+        .to({}, { duration: 0.8 }) // hold
+        .to([t, n].filter(Boolean), { opacity: 0, y: -28, duration: 0.8, ease: 'power2.in' });
+    });
+
+    // subtle parallax for the mock
+    gsap.to('#case-gradr .case__shot', {
+      yPercent: -6,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#case-gradr',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true
+      }
+    });
+  });
+</script>
+
 
 
 </body>
