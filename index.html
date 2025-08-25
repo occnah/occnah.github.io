@@ -46,19 +46,33 @@
     </div>
   </section>
 
-  <!-- Next section placeholder; we’ll build later -->
-  <section class="next-section">
-    <div class="container">
-      <h3>Next up…</h3>
-      <p>Content coming in the next step.</p>
+  <!-- STICKY CASE STUDY: THS -->
+  <section id="case-ths" class="case">
+    <div class="case__inner">
+      <!-- Left: scrolling copy -->
+      <div class="case__left">
+        <div class="case__panel">
+          <p class="case__text">As DevOps Lead at THS Business...</p>
+        </div>
+
+        <div class="case__panel">
+          <p class="case__text">Designed and scaled AWS infrastructure to handle thousands of job applications and event content reliably.</p>
+        </div>
+
+        <div class="case__panel">
+          <p class="case__text">Helping 18,000+ students and 150+ companies every year.</p>
+        </div>
+      </div>
+
+      <!-- Right: sticky image -->
+      <div class="case__right">
+        <figure class="case__shot">
+          <img src="assets/hakyo.png" alt="THS Business website design by Ossian" loading="lazy" />
+          <figcaption class="visually-hidden">Pinned website mockup while copy scrolls.</figcaption>
+        </figure>
+      </div>
     </div>
   </section>
-
-
-  <!-- Placeholder for next section (we'll build it later) -->
-  <main id="content">
-    <section class="spacer" aria-hidden="true"></section>
-  </main>
 
   <!-- Vanta on HERO -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
@@ -142,6 +156,54 @@
     });
   });
 </script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    // === Sticky case study ===
+    const panels = gsap.utils.toArray('#case-ths .case__panel');
+    const texts  = panels.map(p => p.querySelector('.case__text'));
+
+    // start hidden and slightly below
+    gsap.set(texts, { opacity: 0, y: 30 });
+
+    const tlCase = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#case-ths',
+        start: 'top top',
+        end: () => '+=' + (panels.length * window.innerHeight * 0.9),
+        scrub: 0.6,
+        pin: true,
+        anticipatePin: 1
+      }
+    });
+
+    panels.forEach((panel, i) => {
+      const t = panel.querySelector('.case__text');
+
+      // fade/slide in
+      tlCase.to(t, { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' });
+
+      // hold
+      tlCase.to({}, { duration: 0.8 });
+
+      // fade/slide out (except last gets a gentle exit too so the pin releases nicely)
+      tlCase.to(t, { opacity: 0, y: -28, duration: 0.8, ease: 'power2.in' });
+    });
+
+    // (optional) tiny parallax on the mock
+    gsap.to('#case-ths .case__shot', {
+      yPercent: -6,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#case-ths',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true
+      }
+    });
+  });
+</script>
+
 
 </body>
 </html>
