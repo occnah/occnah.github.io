@@ -414,3 +414,32 @@ body {
   .case__shot img,
   .scroll-cue { transition: none !important; animation: none !important; }
 }
+
+/* Reuse your existing gradient tokens */
+.grad-accent,
+.brand {
+  font-weight: 800;
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent; /* Safari */
+  white-space: nowrap;
+}
+
+.grad-number,
+.metric {
+  font-weight: 800;
+  background: var(--grad-metric);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent; /* Safari */
+  white-space: nowrap;
+}
+
+/* Also add the Safari fix to any other gradient text */
+.role__text,
+.g {
+  -webkit-text-fill-color: transparent;
+}
