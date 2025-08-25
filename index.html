@@ -156,7 +156,7 @@
     // Ensure the element exists before initializing Vanta
     let vantaEffect;
     window.addEventListener('DOMContentLoaded', () => {
-      vantaEffect = VANTA.WAVES({
+      VANTA.WAVES({
         el: "#vanta-bg",
         mouseControls: true,
         touchControls: true,
@@ -165,12 +165,8 @@
         minWidth: 200.00,
         scale: 1.00,
         scaleMobile: 1.00,
-        color: 0x0f6fff,
-        shininess: 35.00,
-        waveHeight: 15.00,
-        waveSpeed: 0.75,
-        zoom: 1.00
-      });
+        color: 0x162a
+      })
 
       // Smooth scroll to the first section
       const cue = document.getElementById('scrollCue');
