@@ -344,114 +344,137 @@
   </script>
 
   <script>
-  /* HACKER WALL: pinned/held, faster updates, runs only while held */
-  (function () {
-    function initHackerCanvas() {
-      const section = document.getElementById('hacker');
-      if (!section) return;
+/* HACKER WALL: render immediately, activate on partial view, pin at top */
+(function () {
+  function initHackerCanvas() {
+    const section = document.getElementById('hacker');
+    if (!section) return;
 
-      const canvas = document.getElementById('hacker-canvas');
-      const ctx = canvas.getContext('2d');
-      const CHARS  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789{}[]()<>=+-*/|\\_:#$%&@!?;.,~^';
-      const COLORS = ['#60dca3', '#2b4439', '#5fb0d3'];
+    const canvas = document.getElementById('hacker-canvas');
+    const ctx = canvas.getContext('2d');
+    const CHARS  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789{}[]()<>=+-*/|\\_:#$%&@!?;.,~^';
+    const COLORS = ['#60dca3', '#2b4439', '#5fb0d3'];
 
-      let width, height, cols, rows, cell, fontSize, grid = [];
-      let active = false;
-      let last = 0;
-      const interval = 28;     // faster/more chaotic
-      const changeRatio = 0.22;
+    let width, height, cols, rows, cell, fontSize, grid = [];
+    let active = false;
+    let last = 0;
+    const interval = 28;
+    const changeRatio = 0.22;
 
-      function resize() {
-        const dpr = window.devicePixelRatio || 1;
-        width = section.clientWidth;
-        height = section.clientHeight;
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      width  = section.clientWidth;
+      height = section.clientHeight;
 
-        canvas.width  = Math.floor(width * dpr);
-        canvas.height = Math.floor(height * dpr);
-        canvas.style.width  = width + 'px';
-        canvas.style.height = height + 'px';
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      canvas.width  = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width  = width + 'px';
+      canvas.style.height = height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-        fontSize = Math.max(11, Math.min(18, Math.round(width / 85))); // smaller letters
-        cell = fontSize * 1.1;
+      fontSize = Math.max(11, Math.min(18, Math.round(width / 85)));
+      cell = fontSize * 1.1;
 
-        ctx.font = `${fontSize}px ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, monospace`;
-        ctx.textBaseline = 'top';
+      ctx.font = `${fontSize}px ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, monospace`;
+      ctx.textBaseline = 'top';
 
-        cols = Math.ceil(width / cell);
-        rows = Math.ceil(height / cell);
+      cols = Math.ceil(width / cell);
+      rows = Math.ceil(height / cell);
 
-        grid = new Array(cols * rows).fill(0).map(() => ({
-          ch: CHARS[(Math.random() * CHARS.length) | 0],
-          color: COLORS[(Math.random() * COLORS.length) | 0]
-        }));
-      }
+      grid = new Array(cols * rows).fill(0).map(() => ({
+        ch: CHARS[(Math.random() * CHARS.length) | 0],
+        color: COLORS[(Math.random() * COLORS.length) | 0]
+      }));
+    }
 
-      function render() {
-        ctx.fillStyle = '#0b0f1a';
-        ctx.fillRect(0, 0, width, height);
-        let i = 0;
-        for (let r = 0; r < rows; r++) {
-          for (let c = 0; c < cols; c++) {
-            const cellData = grid[i++];
-            ctx.fillStyle = cellData.color;
-            ctx.fillText(cellData.ch, c * cell, r * cell);
-          }
+    function render() {
+      // Always render at least once so there’s never a blank frame
+      ctx.fillStyle = '#0b0f1a';
+      ctx.fillRect(0, 0, width, height);
+      let i = 0;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const cellData = grid[i++];
+          ctx.fillStyle = cellData.color;
+          ctx.fillText(cellData.ch, c * cell, r * cell);
         }
-      }
-
-      function tick(t) {
-        requestAnimationFrame(tick);
-        if (!active) return;
-        if (t - last < interval) return;
-        last = t;
-
-        const changes = Math.max(1, Math.floor(grid.length * changeRatio));
-        for (let k = 0; k < changes; k++) {
-          const idx = (Math.random() * grid.length) | 0;
-          grid[idx].ch   = CHARS[(Math.random() * CHARS.length) | 0];
-          grid[idx].color = COLORS[(Math.random() * COLORS.length) | 0];
-        }
-        render();
-      }
-
-      resize();
-      window.addEventListener('resize', resize);
-      requestAnimationFrame(tick);
-
-      // Title reveal
-      if (window.gsap && window.ScrollTrigger) {
-        gsap.registerPlugin(ScrollTrigger);
-        gsap.set('#hacker .hacker__title', { opacity: 0, y: 30 });
-
-        // entrance
-        gsap.to('#hacker .hacker__title', {
-          opacity: 1, y: 0, duration: 0.9, ease: 'power2.out',
-          scrollTrigger: { trigger: section, start: 'top 75%', once: true }
-        });
-
-        // scroll HOLD for the hacker section
-        const HACKER_HOLD = 0.9; // adjust 0.6–1.2 to taste
-        ScrollTrigger.create({
-          trigger: section,
-          start: 'top top',
-          end: () => '+=' + Math.round(window.innerHeight * HACKER_HOLD),
-          pin: true,
-          pinSpacing: true,
-          anticipatePin: 1,
-          onEnter: () => { active = true; },
-          onLeave: () => { active = false; },
-          onEnterBack: () => { active = true; },
-          onLeaveBack: () => { active = false; }
-        });
-      } else {
-        active = true;
       }
     }
 
-    window.addEventListener('DOMContentLoaded', initHackerCanvas);
-  })();
-  </script>
+    function tick(t) {
+      requestAnimationFrame(tick);
+      if (!active) return;
+      if (t - last < interval) return;
+      last = t;
+
+      const changes = Math.max(1, Math.floor(grid.length * changeRatio));
+      for (let k = 0; k < changes; k++) {
+        const idx = (Math.random() * grid.length) | 0;
+        grid[idx].ch    = CHARS[(Math.random() * CHARS.length) | 0];
+        grid[idx].color = COLORS[(Math.random() * COLORS.length) | 0];
+      }
+      render();
+    }
+
+    resize();
+    render();                // <-- immediate first paint (fixes “invisible until snap”)
+    window.addEventListener('resize', () => { resize(); render(); });
+    requestAnimationFrame(tick);
+
+    // GSAP / ScrollTrigger wiring
+    if (window.gsap && window.ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Entrance title (unchanged)
+      gsap.set('#hacker .hacker__title', { opacity: 0, y: 30 });
+      gsap.to('#hacker .hacker__title', {
+        opacity: 1, y: 0, duration: 0.9, ease: 'power2.out',
+        scrollTrigger: { trigger: section, start: 'top 75%', once: true }
+      });
+
+      const HACKER_HOLD = 0.9;
+
+      // 1) Activation trigger: as soon as section is partially visible
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top bottom',     // section top hits bottom of viewport
+        end:   'bottom top',     // section bottom leaves top of viewport
+        onEnter:      () => { active = true;  render(); },
+        onEnterBack:  () => { active = true;  render(); },
+        onLeave:      () => { active = false; },
+        onLeaveBack:  () => { active = false; }
+      });
+
+      // 2) Pinning trigger: only handles the pin (kept at top)
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        end: () => '+=' + Math.round(window.innerHeight * HACKER_HOLD),
+        pin: true,
+        pinSpacing: true,
+        anticipatePin: 1,
+        // no onEnter/onLeave here — activation is handled above
+      });
+
+      // Recompute sizes/positions on refresh (e.g., font load, orientation change)
+      ScrollTrigger.addEventListener('refreshInit', () => {
+        resize();
+        render();
+      });
+
+      // A nudge after heavy async stuff (fonts, images, Vanta) settles
+      window.addEventListener('load', () => {
+        ScrollTrigger.refresh();
+      });
+    } else {
+      // Fallback: just run
+      active = true;
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', initHackerCanvas);
+})();
+</script>
 
     <script>
   // PLANET: full-bleed -> shrink-to-card (no stretch) -> spotlight lines
