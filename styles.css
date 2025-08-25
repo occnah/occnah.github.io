@@ -1,270 +1,188 @@
-html {
-  scroll-behavior: smooth;
+/* Base */
+:root{
+  --bg: #0b0f1a;
+  --text: #ffffff;
+  --muted: #c9d4ff;
 }
-
+* { box-sizing: border-box; }
+html, body { height: 100%; }
 body {
-  font-family: "Montserrat", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
   margin: 0;
-  padding: 0;
-  color: #0c0c11;
-  background-color: #f2f2f7;
+  font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
 }
 
-nav {
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-nav ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-nav ul li {
-  display: inline;
-  text-align: center;
-  margin-left: 20px;
-  pointer-events: auto;
-}
-
-nav ul li a {
-  color: white;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-nav ul li a:hover {
-  color: #0073ff;
-}
-
-section {
-  padding: 50px;
-  text-align: center;
-  opacity: 0;
-  animation: fade-in 1s ease forwards;
-}
-
-.about-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 50px;
-}
-
-.profile-pic {
-  margin-right: 20px;
-  border-radius: 50%;
-  overflow: visible;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.profile-pic img {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.about-info {
-  max-width: 600px;
-  text-align: left;
-}
-
-.project-grid,
-.nostalgia-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.project-card,
-.nostalgia-card {
-  background-color: #fff;
-  border-radius: 10px;
+/* HERO */
+.hero {
+  position: relative;
+  height: 100svh;           /* full screen incl. mobile dynamic bars */
+  min-height: 480px;
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  display: grid;
+  place-items: center;      /* centers the content block */
+  text-align: center;
+  padding: 0 2rem;
 }
 
-.project-card:hover,
-.nostalgia-card:hover {
-  transform: translateY(-5px);
+.vanta {
+  position: absolute;
+  inset: 0;                 /* full bleed */
+  z-index: 0;
 }
 
-.project-card img,
-.nostalgia-card img {
-  width: 100%;
-  height: auto;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+.hero__content {
+  position: relative;
+  z-index: 1;               /* above Vanta */
+  display: grid;
+  gap: 0.75rem;
+  backdrop-filter: none;    /* feel free to add blur later if you want */
 }
 
-.project-info,
-.nostalgia-info {
-  padding: 20px;
+.hero__title {
+  font-weight: 800;
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0;
 }
 
-.project-info h3,
-.nostalgia-info h3 {
-  margin-top: 0;
-  color: #333;
+.hero__subtitle {
+  margin: 0;
+  font-weight: 600;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: var(--muted);
 }
 
-.project-info p,
-.nostalgia-info p {
-  color: #666;
-  font-size: 14px;
+/* Scroll cue at bottom center */
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(16px, 3vh, 36px);
+  transform: translateX(-50%);
+  z-index: 1;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0.9;
+  animation: bob 1.8s ease-in-out infinite;
 }
 
-.section-description {
-  color: #0073ff;
-  font-weight: 300;
-  margin-bottom: 20px;
+.scroll-cue:hover { opacity: 1; }
+.scroll-cue svg { display: block; fill: currentColor; }
+
+@keyframes bob {
+  0%, 100% { transform: translate(-50%, 0); }
+  50%      { transform: translate(-50%, 6px); }
 }
 
-.project-image {
-  max-height: 250px;
-  object-fit: cover;
+/* Placeholder next section just to enable scrolling now */
+.spacer {
+  height: 120vh;
+  background: linear-gradient(180deg, transparent, rgba(11,15,26,0.85));
 }
 
+/* ===== ROLES SECTION ===== */
+.roles {
+  background: var(--bg);
+  color: var(--text);
+}
 
-#bgcontainer {
-  color: #f9f9f9;
+.roles__inner {
+  /* we’ll pin this section with GSAP; keep a generous height via pinning */
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: clamp(16px, 4vw, 48px);
+  align-items: center;
+  padding: clamp(48px, 8vw, 120px) clamp(20px, 6vw, 80px);
+}
+
+@media (max-width: 860px) {
+  .roles__inner {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* Left column (fixed within the pinned section) */
+.roles__fixed {
+  margin: 0;
+  font-weight: 800;
+  font-size: clamp(2rem, 7vw, 5rem);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: #ffffff;
+  opacity: 0.95;
+}
+
+/* Right column with stacked roles */
+.roles__right {
+  position: relative;
+  min-height: clamp(40vh, 48vh, 56vh);
+  display: grid;
+  place-items: center;
+  /* optional subtle separator on large screens */
+  border-left: 1px solid rgba(255,255,255,0.08);
+  padding-left: clamp(12px, 1.8vw, 24px);
+}
+
+@media (max-width: 860px) {
+  .roles__right {
+    border-left: none;
+    padding-left: 0;
+    min-height: 40vh;
+  }
+}
+
+.role {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
   pointer-events: none;
 }
 
-.dropdown {
-  position: relative;
-  z-index: 3;
-  /* Ensure dropdown is above bgcontainer */
-  pointer-events: auto;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  width: 35px;
-  padding: 8px 0;
-  z-index: 4;
-  /* Ensure dropdown content is above bgcontainer */
-  border-radius: 5px;
-  top: 100%;
-  left: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  pointer-events: auto;
-}
-
-.dropdown-content a {
-  display: block;
+.role__text {
+  font-weight: 800;
+  font-size: clamp(1.8rem, 6vw, 4rem);
+  letter-spacing: -0.015em;
   text-align: center;
-  text-decoration: none;
-  color: black;
-  padding: 5px 0px 5px 0px;
-  z-index: 5;
-  cursor: pointer;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 6px 20px rgba(0,0,0,0.25));
+  /* gradient text (nice with dark bg) */
+  background: linear-gradient(180deg, #ffffff, #b8c6ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-.dropdown-content a:not(:first-child) {
-  border-top: 1px solid lightgray;
-  /* Add top border to all except the first */
+/* Next section placeholder so you can scroll past the pin */
+.next-section {
+  min-height: 120vh;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(80% 80% at 50% 0%, rgba(15,111,255,0.15) 0%, rgba(15,111,255,0) 60%),
+    var(--bg);
 }
-
-.dropdown-content a:hover {
-  background-color: #ddd;
+.next-section .container {
+  text-align: center;
+  max-width: 800px;
+  padding: 0 24px;
 }
-
-
-#main-title {
-  font-size: 3em;
-  font-weight: 200;
+.next-section h3 {
+  margin: 0 0 12px;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+.next-section p {
   margin: 0;
-}
-
-#lang-btn {
-  float: right;
-  background-color: white;
-  border: none;
-  padding: 10px;
-  width: 35px;
-  height: 35px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-#lang-btn:hover {
-  background-color: #f0f0f0;
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-/* Styles for cursor animation */
-.cursor {
-  display: inline-block;
-  animation: blink-caret 0.75s infinite;
-}
-
-@keyframes blink-caret {
-
-  from,
-  to {
-    border-color: transparent;
-  }
-
-  50% {
-    border-color: black;
-  }
-}
-
-/* CSS for screens wider than 720 pixels */
-/* Your regular CSS styles go here */
-
-@media (max-width: 720px) {
-
-  /* CSS for screens less than 720 pixels wide */
-  /* Additional CSS styles specific to smaller screens go here */
-  .profile-pic {
-    text-align: center;
-  }
-
-  .about-content {
-    display: block;
-    text-align: center;
-  }
-
-  .about-info {
-    display: block;
-    text-align: center;
-  }
-
-  #bio-list,
-  #bio-text {
-    text-align: left;
-  }
-
-  #main-title {
-    font-size: 2.5em;
-    text-align: center;
-  }
-
-  #about {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  color: var(--muted);
 }

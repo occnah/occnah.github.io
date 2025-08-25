@@ -1,96 +1,155 @@
-/* Apple/Margelo-style beats + highlight with smoother easing,
-   and a solid-on-scroll navbar toggle. No libraries. */
+/* Centered anchors, robust image sizing, smooth beats (down→up),
+   highlight & chunks modes, mobile-safe behavior, and solid navbar toggle. */
 (function(){
   // ---------------- NAVBAR SOLID TOGGLE ----------------
   const nav = document.getElementById('site-nav');
   const hero = document.getElementById('hero-intro');
   const navObs = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
-      // When hero is *not* intersecting (you've scrolled past it), make nav solid
       nav.classList.toggle('nav-solid', !e.isIntersecting);
     });
   }, { threshold: 0.01 });
   if (hero) navObs.observe(hero);
 
+  // ---------------- CENTERED ANCHOR SCROLL ----------------
+  const navHeight = () => document.getElementById('site-nav')?.offsetHeight || 0;
+
+  function scrollToTarget(el){
+    const rect = el.getBoundingClientRect();
+    const y = window.pageYOffset + rect.top;
+    const vh = window.innerHeight;
+    const anchorMode = el.getAttribute('data-anchor') || 'top';
+
+    let targetY;
+    if (anchorMode === 'center') {
+      // center the section body in viewport, minus nav
+      const centerOffset = Math.max(0, (vh - Math.min(rect.height, vh*0.8)) / 2);
+      targetY = y - (vh/2 - centerOffset) + navHeight();
+    } else {
+      // top anchor (just under nav)
+      targetY = y - navHeight() - 8;
+    }
+    window.scrollTo({ top: targetY, behavior: 'smooth' });
+  }
+
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click', (ev)=>{
+      const id = a.getAttribute('href');
+      if (!id || id === '#') return;
+      const target = document.querySelector(id);
+      if (!target) return;
+      ev.preventDefault();
+      scrollToTarget(target);
+      history.pushState(null, '', id);
+    });
+  });
+
+  // ---------------- IMAGE PRELOAD (prevents "missing second image") ----------------
+  const toPreload = Array.from(document.querySelectorAll('.sb-media img, .fs-split-right img'));
+  toPreload.forEach(img=>{ const i = new Image(); i.src = img.currentSrc || img.src; });
+
   // --------------- HELPERS ----------------
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const lerp = (a, b, t) => a + (b - a) * t;
 
-  // Compute "progress to center" for a beat (0 far, 1 centered)
   function centerProgress(el){
     const r = el.getBoundingClientRect();
     const vh = window.innerHeight || 1;
     const center = vh * 0.5;
     const mid = r.top + r.height/2;
     const dist = Math.abs(mid - center);
-    const max = vh * 0.55;   // area where we start/stop easing
+    const max = vh * 0.6;
     return clamp(1 - dist / max, 0, 1);
   }
 
-  // ---------------- BEAT MODE ----------------
+  // ---------------- BEAT MODE (scroll-driven; no IO glitches) ----------------
   const beatContainers = Array.from(document.querySelectorAll('.sb-steps[data-mode="beat"]'));
   const allBeats = beatContainers.flatMap(c => Array.from(c.querySelectorAll('.sb-beat')));
 
-  // Observe which beat is in range (coarse), then refine with rAF easing
-  const beatObserver = new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-      const beat = entry.target;
-      const panel = beat.closest('.sb-panel');
-
-      if (entry.isIntersecting){
-        // mark panel current
-        document.querySelectorAll('.sb-panel').forEach(p=>p.classList.toggle('is-current', p===panel));
-        // activate this beat
-        panel.querySelectorAll('.sb-beat').forEach(b=>b.classList.toggle('is-active', b===beat));
-      }
-    });
-  }, { threshold: 0.6, rootMargin: '0px 0px -20% 0px' });
-  allBeats.forEach(b => beatObserver.observe(b));
-
-  // Smooth opacity/scale based on distance to center while scrolling
-  let ticking = false;
-  function onScrollSmooth(){
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(()=>{
-      allBeats.forEach(b=>{
-        const p = centerProgress(b); // 0..1
-        const eased = p*p*(3 - 2*p); // smoothstep
-        const opacity = lerp(0.15, 1, eased);
-        const scale = lerp(0.985, 1, eased);
-        const translate = lerp(14, 0, eased);
+  function updateBeats(){
+    beatContainers.forEach(container=>{
+      const beats = Array.from(container.querySelectorAll('.sb-beat'));
+      // find beat whose center is closest to viewport center
+      let best = beats[0]; let bestDist = Infinity;
+      const vhMid = (window.innerHeight||1) * 0.5;
+      beats.forEach(b=>{
+        const r = b.getBoundingClientRect();
+        const mid = r.top + r.height/2;
+        const d = Math.abs(mid - vhMid);
+        if (d < bestDist){ bestDist = d; best = b; }
+        // smooth drift (down→up) & opacity
+        const p = centerProgress(b);
+        const eased = p*p*(3 - 2*p);
+        const opacity = lerp(0.14, 1, eased);
+        const scale = lerp(0.982, 1, eased);
+        const translate = lerp(18, -6, eased);
         b.style.opacity = opacity.toFixed(3);
         b.style.transform = `translateY(${translate}px) scale(${scale.toFixed(3)})`;
       });
+      beats.forEach(b=>b.classList.toggle('is-active', b===best));
+      const panel = container.closest('.sb-panel');
+      if (panel){
+        const panelMid = panel.getBoundingClientRect().top + panel.getBoundingClientRect().height/2;
+        panel.classList.toggle('is-current', Math.abs(panelMid - vhMid) < (window.innerHeight*0.6));
+      }
+    });
+  }
+
+  // ---------------- HIGHLIGHT MODE (all visible; active line) ----------------
+  const highlightContainers = Array.from(document.querySelectorAll('.sb-steps[data-mode="highlight"]'));
+  function updateHighlight(){
+    const vhMid = (window.innerHeight||1) * 0.5;
+    highlightContainers.forEach(steps=>{
+      const items = Array.from(steps.querySelectorAll('.sb-item'));
+      // use markers if present, else compute from items
+      const markers = Array.from(steps.querySelectorAll('.sb-marker'));
+      let idx = 0; let best = Infinity;
+      const sources = markers.length ? markers : items;
+      sources.forEach((el,i)=>{
+        const r = el.getBoundingClientRect();
+        const mid = r.top + r.height/2;
+        const d = Math.abs(mid - vhMid);
+        if (d < best){ best=d; idx=i; }
+      });
+      items.forEach((it,i)=>it.classList.toggle('is-active', i===idx));
+      const panel = steps.closest('.sb-panel');
+      if (panel){
+        const panelMid = panel.getBoundingClientRect().top + panel.getBoundingClientRect().height/2;
+        panel.classList.toggle('is-current', Math.abs(panelMid - vhMid) < (window.innerHeight*0.6));
+      }
+    });
+  }
+
+  // ---------------- CHUNKS MODE (one paragraph; span highlight) ----------------
+  const chunkContainers = Array.from(document.querySelectorAll('.sb-steps[data-mode="chunks"]'));
+  function updateChunks(){
+    const vhMid = (window.innerHeight||1) * 0.5;
+    chunkContainers.forEach(steps=>{
+      const chunks = Array.from(steps.querySelectorAll('.sb-chunk'));
+      const markers = Array.from(steps.querySelectorAll('.sb-marker'));
+      const sources = markers.length ? markers : chunks;
+      let idx = 0; let best = Infinity;
+      sources.forEach((el,i)=>{
+        const r = el.getBoundingClientRect(); const mid = r.top + r.height/2;
+        const d = Math.abs(mid - vhMid); if (d<best){best=d; idx=i;}
+      });
+      chunks.forEach((c,i)=>c.classList.toggle('is-active', i===idx));
+    });
+  }
+
+  // ---------------- SCROLL LOOP ----------------
+  let ticking = false;
+  function onScroll(){
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(()=>{
+      updateBeats();
+      updateHighlight();
+      updateChunks();
       ticking = false;
     });
   }
-  window.addEventListener('scroll', onScrollSmooth, { passive:true });
-  window.addEventListener('resize', onScrollSmooth);
-
-  // ---------------- HIGHLIGHT MODE ----------------
-  document.querySelectorAll('.sb-steps[data-mode="highlight"]').forEach(steps => {
-    const items = Array.from(steps.querySelectorAll('.sb-item'));
-    const panel = steps.closest('.sb-panel');
-    let markers = Array.from(steps.querySelectorAll('.sb-marker'));
-
-    // if markers missing, synthesize
-    if (markers.length === 0) {
-      const mbox = document.createElement('div'); mbox.className = 'sb-markers';
-      items.forEach((_,i)=>{ const m=document.createElement('div'); m.className='sb-marker'; m.dataset.index=i; mbox.appendChild(m); });
-      steps.appendChild(mbox);
-      markers = Array.from(steps.querySelectorAll('.sb-marker'));
-    }
-
-    const markerObs = new IntersectionObserver((entries)=>{
-      entries.forEach(entry=>{
-        if (!entry.isIntersecting) return;
-        const idx = Number(entry.target.dataset.index || 0);
-        items.forEach((it,i)=>it.classList.toggle('is-active', i===idx));
-        document.querySelectorAll('.sb-panel').forEach(p=>p.classList.toggle('is-current', p===panel));
-      });
-    }, { threshold: 0.55, rootMargin: '0px 0px -25% 0px' });
-
-    markers.forEach(m=>markerObs.observe(m));
-  });
+  window.addEventListener('scroll', onScroll, { passive:true });
+  window.addEventListener('resize', onScroll);
+  onScroll(); // initial paint
 })();
