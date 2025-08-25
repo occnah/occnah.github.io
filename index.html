@@ -197,6 +197,27 @@
     </div>
   </section>
 
+  <!-- MORE: parallax cloud of project cards around a central headline -->
+  <section id="more" class="more" aria-label="More projects">
+    <div class="more__pin">
+      <h2 class="more__title" aria-label="and so much more">And so much more</h2>
+
+      <div class="more__cloud" aria-hidden="true">
+        <!-- Replace thumbnails/labels as you like -->
+        <article class="more__card" data-depth="-520"><img src="assets/honccafest.png" alt="" /><span>Arcade Games</span></article>
+        <article class="more__card" data-depth="-420"><img src="assets/gmm.png" alt="" /><span>Guassian Mixture Models</span></article>
+        <article class="more__card" data-depth="-360"><img src="assets/matlabweather.png" alt="" /><span>Weather Predictor</span></article>
+        <article class="more__card" data-depth="-260"><img src="assets/rsa.png" alt="" /><span>RSA Algorithm</span></article>
+        <article class="more__card" data-depth="-160"><img src="assets/svm.png" alt="" /><span>Support Vectors</span></article>
+        <article class="more__card" data-depth="-80"><img src="assets/water.png" alt="" /><span>Water Shaders</span></article>
+        <article class="more__card" data-depth="0"><img src="assets/1d.png" alt="" /><span>Bayesian Inference</span></article>
+        <article class="more__card" data-depth="80"><img src="assets/fivemproj.jpg" alt="" /><span>FiveM Mods</span></article>
+        <article class="more__card" data-depth="160"><img src="assets/ray.png" alt="" /><span>Analytics</span></article>
+        <article class="more__card" data-depth="240"><img src="assets/procedural.png" alt="" /><span>Perlin Noise</span></article>
+      </div>
+    </div>
+  </section>
+
   <!-- CONTACT (fullscreen) -->
   <section id="contact" class="contact contact--hero" role="contentinfo">
     <div class="contact__wrap">
@@ -725,6 +746,120 @@
           }
         });
       }
+    });
+  </script>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!window.gsap || !window.ScrollTrigger) return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      const section = document.querySelector('#more');
+      if (!section) return;
+
+      const pin   = section.querySelector('.more__pin');
+      const title = section.querySelector('.more__title');
+      const cards = gsap.utils.toArray('.more__card');
+
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) return;
+
+      // Predefined positions across the viewport (xvw, yvh)
+      // Tweak these to taste; they avoid clustering and feel balanced around the center
+      const layout = [
+        { x: 8,  y: 12 },  { x: 72, y: 18 },
+        { x: 16, y: 58 },  { x: 84, y: 66 },
+        { x: 50, y: 12 },  { x: 30, y: 76 },
+        { x: 62, y: 80 },  { x: 12, y: 86 },
+        { x: 86, y: 40 },  { x: 38, y: 24 },
+      ];
+
+      // Map depth (in px) to blur (in px). Farther = blurrier.
+      const blurForDepth = (z) => {
+        // z typically ranges from about -520 (far) to +240 (near)
+        const t = gsap.utils.clamp(0,1,( -z + 100 ) / 700); // invert: far (negative) -> larger t
+        return gsap.utils.interpolate(6, 0.6, 1 - t);       // 6px far, 0.6px near
+      };
+
+      // z-index by depth so near cards can go above the title (z-index 5)
+      const zIndexForDepth = (z) => (z > 120 ? 6 : z > 0 ? 5 : 3);
+
+      // Initial placement & depth styling
+      cards.forEach((card, i) => {
+        const pos = layout[i % layout.length];
+        const z   = parseFloat(card.dataset.depth || 0); // from HTML
+        const blur = blurForDepth(z);
+        card.style.filter = `blur(${blur}px)`;
+        card.style.zIndex = String(zIndexForDepth(z));
+
+        // Place in 3D space: translateZ gives perspective parallax
+        gsap.set(card, {
+          x: pos.x + 'vw',
+          y: pos.y + 'vh',
+          z: z,
+          rotateZ: gsap.utils.random(-2, 2), // tiny tilt variation
+          transformPerspective: 900,
+          transformStyle: 'preserve-3d'
+        });
+      });
+
+      const scrollLen = () => Math.round(window.innerHeight * 2.2);
+
+      // Pin the scene
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: () => '+=' + scrollLen(),
+          scrub: 0.8,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true
+        }
+      });
+
+      // Headline: appear + subtle scale up
+      tl.fromTo(title,
+        { opacity: 0, y: 28, scale: 0.96 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: 'power2.out' },
+        0
+      );
+
+      // Optional glow pulse as you progress
+      tl.to(title, {
+        textShadow: '0 0 0 rgba(255,255,255,0), 0 10px 40px rgba(0,0,0,.35)',
+        duration: 0.3,
+        ease: 'power1.out'
+      }, '>-0.2');
+
+      // Parallax for each card: deeper cards move more slowly; near cards drift more
+      cards.forEach((card, i) => {
+        const z = parseFloat(card.dataset.depth || 0);
+
+        // Speed factor: far (negative) -> slow; near (positive) -> faster
+        const speed = gsap.utils.mapRange(-520, 240, 0.2, 1.1, z);
+
+        // Slight in/out Z drift to enhance depth without changing blur (CSS filter stays)
+        const zDrift = gsap.utils.mapRange(-520, 240, 40, -20, z);
+
+        // Build a tiny sub-timeline per card locked to main tl's progress
+        tl.to(card, {
+          y: `+=${gsap.utils.interpolate(-120, 140, (i % 10)/9) * speed}`, // varied directions
+          x: `+=${gsap.utils.interpolate(60, -60, (i % 10)/9) * (speed * 0.6)}`,
+          rotation: `+=${gsap.utils.random(-1.2, 1.2)}`,
+          z: `+=${zDrift}`,
+          duration: 1, ease: 'none'
+        }, 0);
+      });
+
+      // Keep geometry fresh on resize/refresh
+      ScrollTrigger.addEventListener('refreshInit', () => {
+        // Re-apply positions so layout doesn't drift after font/image loads
+        cards.forEach((card, i) => {
+          const pos = layout[i % layout.length];
+          gsap.set(card, { x: pos.x + 'vw', y: pos.y + 'vh' });
+        });
+      });
     });
   </script>
 
