@@ -665,3 +665,43 @@ body {
   .more__title { opacity: 1; transform: translate(-50%,-50%); }
   .more__card { filter: none !important; }
 }
+
+.mono {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 14px;
+}
+
+.whoami-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px dashed rgba(255,255,255,.25);
+  background: rgba(255,255,255,.05);
+  backdrop-filter: blur(8px);
+  color: #e6edf3;
+  box-shadow: 0 0 24px rgba(0, 209, 255, 0.2);
+}
+
+.whoami-prefix {
+  flex-shrink: 0;
+  margin-right: 6px;
+}
+
+.whoami-dynamic {
+  display: inline-block;
+  text-align: left;       /* anchor left */
+  min-width: 18ch;        /* set to length of longest role */
+  white-space: nowrap;    /* prevents breaking */
+}
+
+.cursor {
+  display: inline-block;
+  margin-left: 2px;
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}

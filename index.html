@@ -19,7 +19,12 @@
 
     <div class="hero__content" role="banner" aria-label="Intro">
       <h1 class="hero__title">Hi, I’m Ossian</h1>
-      <p class="hero__subtitle">Software Engineer & DevOps Specialist</p>
+      <div class="whoami-badge mono">
+        <span class="whoami-prefix">$ whoami —</span>
+        <span class="whoami-dynamic">
+          <span id="whoami-type"></span><span class="cursor">▉</span>
+        </span>
+      </div>
     </div>
 
     <button class="scroll-cue" id="scrollCue" aria-label="Scroll to content">
@@ -39,8 +44,8 @@
 
       <div class="roles__right">
         <!-- All phrases are stacked; we animate opacity/position on scroll -->
-        <div class="role"><span class="role__text">AI Engineer</span></div>
-        <div class="role"><span class="role__text">DevOps Specialist</span></div>
+        <div class="role"><span class="role__text">ML Engineer</span></div>
+        <div class="role"><span class="role__text">DevOps Lead</span></div>
         <div class="role"><span class="role__text">Fullstack Dev</span></div>
       </div>
     </div>
@@ -136,7 +141,7 @@
           <ul class="planet__copy" aria-label="Planet generator details">
             <li class="planet__line">Think again.</li>
             <li class="planet__line">Planet generator.</li>
-            <li class="planet__line">Handmade with math.</li>
+            <li class="planet__line">No engine. Pure math.</li>
           </ul>
         </div>
         <div class="planet__right">
@@ -154,9 +159,9 @@
       <div class="case__right">
         <figure class="case__shot case__shot--stack">
           <!-- Replace src paths with your real assets -->
-          <img class="case__img" src="assets/gymtrack34.png" alt="App interface 1" loading="lazy" decoding="async" />
-          <img class="case__img" src="assets/calcrn2.png" alt="App interface 2" loading="lazy" decoding="async" />
-          <img class="case__img" src="assets/hakyo.png" alt="App interface 3" loading="lazy" decoding="async" />
+          <img class="case__img" src="assets/shlbets.png" alt="App interface 3" loading="lazy" decoding="async" />
+          <img class="case__img" src="assets/hakyo2.png" alt="App interface 1" loading="lazy" decoding="async" />
+          <img class="case__img" src="assets/gymapp2.png" alt="App interface 2" loading="lazy" decoding="async" />
           <figcaption class="visually-hidden">App gallery cycling through three UIs.</figcaption>
         </figure>
       </div>
@@ -862,6 +867,31 @@
         });
       });
     });
+  </script>
+
+  <script>
+    const roles = [
+      "machine learning engineer",
+      "devops lead",
+      "ctf enjoyer",
+      "open-source contributor"
+    ];
+
+    let idx = 0, char = 0, dir = 1;
+    const el = document.getElementById("whoami-type");
+
+    function tick() {
+      const word = roles[idx];
+      el.textContent = word.slice(0, char);
+      char += dir;
+
+      if (char === word.length + 6) dir = -1; // pause before deleting
+      if (char === 0) { dir = 1; idx = (idx + 1) % roles.length; }
+
+      setTimeout(tick, 80);
+    }
+
+    tick();
   </script>
 
 </body>
